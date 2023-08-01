@@ -1,0 +1,314 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slort="start">
+      <ion-menu-button menu="menuPrincipal"></ion-menu-button>
+      <ion-title>{{tituloCantidad}}</ion-title>
+      <app-header-component
+        *ngIf="notificaciones"
+        [headerText]="''"
+        [numeroMensajes]="ver ? numeroMensajes : numeroMensajes"
+      >
+      </app-header-component>
+
+      <!-- <app-user-component></app-user-component> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+
+
+
+
+<div class="searchbar-container"  >
+  <ion-searchbar [(ngModel)]="inputSearchBar" disabled="false" [debounce]="500" placeholder="Numero de carta o patente" (ionInput)="searchByText($event,['Turno', 'QA'])"></ion-searchbar>
+</div>
+
+
+<!--<div class="active-filters-container">
+  <ion-badge *ngIf="activeFilters.estado" color="main-gray">{{activeFilters.estado}}</ion-badge>
+   <ion-badge *ngIf="activeFilters.destino" color="main-gray">{{activeFilters.destino}}</ion-badge>
+ </div>
+-->
+
+
+<ion-card>
+ <!--  <div class="element-table" *ngIf="this.parcialTableData.length === 0"> No hay camiones en posición.</div>-->
+<div class="table-container" *ngIf="this.parcialTableData.length > 0" >
+  <div class="head-table wrapper">
+      <div class="element-head-table element-wrapper">
+          Estado
+      </div>
+      <div class="element-head-table element-wrapper nroCarta-element">
+          Nro Carta
+      </div>
+      <div class="element-head-table element-wrapper patente-element">
+          Patente
+      </div>
+  </div>
+  <div class="infinite-scroll-top"
+            *ngIf="(responsiveTableService.checkIfSpinnerTopIsOn(completeTableData, parcialTableData) &&
+                (!activeFilters.destino && !activeFilters.estado)  &&
+                (!busquedaActiva)) && completeTableData.length > 0"
+            >
+
+        </div>
+
+
+
+
+  <div class="element-table"  *ngFor="let cartaPorte of parcialTableData ; index as i">
+    <ion-accordion-group class="important-info wrapper" >
+      <ion-accordion  value="first">
+        <ion-item slot="header" color="light" class="ion-item">
+          <ion-label>
+
+            <div class="important-info wrapper"  (click)="toggleState(i)"
+            [ngClass]="responsiveTableService.getColorEstado(cartaPorte)">
+              <div class="element-important element-wrapper">
+                {{ cartaPorte.estadoPosiReal ? cartaPorte.estadoPosiReal : cartaPorte.estadoCarta.descripcion }}
+
+                </div>
+                <div class="element-important element-wrapper nroCarta-element">
+                    {{cartaPorte.nroCarta}}
+                </div>
+                <div class="element-important element-wrapper patente-element">
+                    {{cartaPorte.patente}}
+                </div>
+            </div>
+          </ion-label>
+        </ion-item>
+        <div class="ion-padding" slot="content">
+
+          <div class="extra-info" >
+            <div class="extra-info" >
+                <div *ngFor="let interviniente of cartaPorte.intervinientes" class="element-extra">
+                    <div class="title-extra">
+                       {{responsiveTableService.formatTipoInterviniente(interviniente.tipoInterviniente.nombre)}}
+                    </div>
+                    <div class="content-extra">
+                        {{interviniente.nombre}}
+                    </div>
+                </div>
+
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Destino
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.destino.descripcionAbre}}, {{cartaPorte.plantaDestino.descripcion}}
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Entregador
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.entregador.nombre}}
+                    </div>
+                </div>
+
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Cereal
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.cereal.nombre}}
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Procedencia
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.localidadProcedencia.descripcion}}
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Kg Procedencia:
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.kgNetoProcedencia}}
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Kg Neto:
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.kgNeto}}
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Calidad:
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.calidad.descripcionCorta}}
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Observacion:
+                    </div>
+                    <div class="content-extra">
+
+                      {{ posicionDiaService.getAnalisis(cartaPorte) }}
+
+
+                    </div>
+                </div>
+                <div class="element-extra">
+                    <div class="title-extra">
+                        Turno:
+                    </div>
+                    <div class="content-extra">
+                        {{cartaPorte.turno}}
+                    </div>
+                </div>
+
+                <div *ngIf="
+                posicionDiaService.checkIfAccionable(cartaPorte, usuarioActivo) ||
+                puertosService.checkIfAccionable(cartaPorte)
+             " class="element-extra btn-accion-container">
+                <div class="title-extra">
+                </div>
+                <div class="content-extra extra-buttons">
+                    <button *ngIf="posicionDiaService.checkIfDesviableOrLlamable(cartaPorte) && usuarioActivo.tipo.id !== 99"
+                            (click)="posicionDiaService.solicitarAccion(cartaPorte, 'SOLICITUD_LLAMADO')"
+                            class="btn-llamado" ion-button outline>
+                        <i class="fa fa-phone" aria-hidden="true"></i>
+                    </button>
+                    <button *ngIf="
+                                posicionDiaService.checkIfDesviableOrLlamable(cartaPorte) ||
+                                puertosService.checkIfAccionable(cartaPorte)
+                            "
+                            (click)="posicionDiaService.solicitarAccion(cartaPorte, 'SOLICITUD_DESVIO')"
+                            class="btn-desviar" ion-button outline>
+                        <!--{{textos.posicionDia.html.btnAccion.desvio}}-->Desviar
+                    </button>
+                    <button *ngIf="puertosService.checkIfAccionable(cartaPorte)"
+                            (click)="posicionDiaService.solicitarAccion(cartaPorte, 'SOLICITUD_REVISION')"
+                            class="btn-revision" ion-button outline>
+                       <!--  {{textos.posicionDia.html.btnAccion.revision}} --> Revision
+                    </button>
+                    <button *ngIf="
+                                posicionDiaService.checkIfAutorizable(cartaPorte) ||
+                                puertosService.checkIfAccionable(cartaPorte)
+                            "
+                            (click)="posicionDiaService.solicitarAccion(cartaPorte, 'SOLICITUD_AUTORIZACION')"
+                            class="btn-autorizar" ion-button outline>
+                        <!--{{textos.posicionDia.html.btnAccion.autorizacion}}-->Autorizar
+                    </button>
+                </div>
+            </div>
+
+            </div>
+        </div>
+
+
+        </div>
+      </ion-accordion>
+
+    </ion-accordion-group>
+
+
+
+
+
+</div>
+
+  <!-- Si NÓ se llegó al final (la posi del últi item de parcialTable es < qeu la cantid total) -->
+     <!--  y si NÓ hay fitros activos ni busqueda activa. En tal caso, se muestra todo lo que se encontró
+        [disabled]="(
+                completeTableData &&
+                (completeTableData.indexOf(parcialTableData[parcialTableData.length-1]) < completeTableData.length-1) &&
+                (!activeFilters.destino && !activeFilters.estado) &&
+                (!busquedaActiva)
+            )"
+
+<ion-infinite-scroll *ngIf="!loading"
+
+            (ionInfinite)="doInfiniteBottom($event)">
+            <ion-infinite-scroll-content>
+
+            </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+          -->
+
+  <!-- <div  class="spinner-container">
+      <ion-spinner ></ion-spinner>
+  </div>-->
+
+  <div class="empty-table">
+
+      <div ></div>
+
+      <ng-template #nadaPosi>
+          <div class="message-empty">{{txtNadaEnPosicion}}</div>
+      </ng-template>
+      <ng-template #nadaBusqueda>
+          <div class="message-empty">{{txtNadaEnBusqueda}}</div>
+      </ng-template>
+
+
+  </div>
+
+</div>
+</ion-card>
+
+
+
+<ion-fab slot="fixed" *ngIf="this.parcialTableData.length > 0" horizontal="center" vertical="bottom"  #fabPrincipal>
+  <ion-fab-button >
+    <ion-icon name="add"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="end"  >
+    <ion-fab class="fab-estado" #fabEstado>
+      <ion-fab-button (click)="posicionDiaService.closeFabs([fabDestino])" ion-fab>Estado</ion-fab-button>
+      <ion-fab-list class="fab-list-estado" side="top">
+          <button
+              *ngFor="let estado of estadosList"
+              (click)="onClickFilter(estado, 'estado', [fabEstado, fabDestino, fabPrincipal])" ion-fab>
+              {{estado}}
+          </button>
+      </ion-fab-list>
+  </ion-fab>
+  </ion-fab-list>
+
+
+
+
+  <ion-fab-list side="top" >
+    <ion-fab class="fab-destino" #fabDestino>
+      <ion-fab-button>
+        Destino
+      </ion-fab-button>
+    <ion-fab-list class="fab-list-destino" side="top">
+        <button
+            *ngFor="let destino of destinosList"
+            (click)="onClickFilter(destino, 'destino', [fabDestino, fabEstado, fabPrincipal])"
+            ion-fab>
+            {{destino}}
+        </button>
+
+    </ion-fab-list>
+  </ion-fab>
+
+  </ion-fab-list>
+
+
+  <ion-fab-list side="start">
+    <ion-fab class="fab-destino" #fabTodos>
+      <ion-fab-button ion-fab (click)="onClickFilter('', 'todos', [fabTodos, fabDestino, fabEstado, fabPrincipal])">
+        Todos
+      </ion-fab-button>
+  </ion-fab>
+  </ion-fab-list>
+</ion-fab>
+
+</ion-content>

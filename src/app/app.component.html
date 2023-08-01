@@ -1,0 +1,107 @@
+
+
+ <ion-app >
+  <ion-menu  contentId="main-content" menuId="menuPrincipal">
+
+    <ion-content class="ion-padding">
+      <ion-list id="inbox-list">
+        <ion-list-header>
+
+          <ion-toolbar>
+            <ion-item class="item item-block">
+                <ion-avatar item-start="">
+                    <!-- <i class="fas fa-user-circle" aria-hidden="true"></i> -->
+                    <div class="icon-container"  item-start>
+                      <ion-icon name="person-circle-outline"></ion-icon>
+                    </div>
+                </ion-avatar>
+
+                <ion-label class="info-user">
+                    <h2>{{usuarioActivo?.nombre}}</h2>
+                    <p>{{usuarioActivo?.tipo}}</p>
+                </ion-label>
+            </ion-item>
+        </ion-toolbar>
+
+        </ion-list-header>
+
+       <ion-note>
+
+        <tr></ion-note>
+
+        <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
+          <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false">
+            <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+            <ion-label>{{ p.title }}</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
+
+
+
+      </ion-list>
+
+      <ion-list id="inbox-list">
+        <ion-list-header>
+           Notificaciones
+        </ion-list-header>
+
+        <ion-menu-toggle>
+          <ion-item>
+            <ion-icon aria-hidden="true" slot="start" [ios]="'notifications-outline'" [md]="'notifications-outline'"></ion-icon>
+            <ion-label>Push</ion-label>
+            <ion-toggle checked="true"></ion-toggle>
+          </ion-item>
+        </ion-menu-toggle>
+
+        <ion-menu-toggle>
+          <ion-item>
+            <ion-icon aria-hidden="true" slot="start" [ios]="'mail-outline'" [md]="'mail-outline'"></ion-icon>
+            <ion-label>Email</ion-label>
+            <ion-toggle checked="false"></ion-toggle>
+          </ion-item>
+        </ion-menu-toggle>
+ </ion-list>
+
+
+ <ion-list id="inbox-list">
+  <ion-list-header>
+     Otros
+  </ion-list-header>
+
+
+  <ion-menu-toggle >
+    <ion-item lines="none" detail="false">
+      <ion-icon aria-hidden="true" slot="start" [ios]="'reader-outline'" [md]="'reader-outline'"></ion-icon>
+     <ion-label> Camiones a la descarga</ion-label>
+    </ion-item>
+  </ion-menu-toggle>
+
+  <ion-menu-toggle >
+    <ion-item lines="none" detail="false">
+      <ion-icon aria-hidden="true" slot="start" [ios]="'shield-half-outline'" [md]="'shield-half-outline'"></ion-icon>
+      <ion-label>Políticas de Privacidad</ion-label>
+    </ion-item>
+  </ion-menu-toggle>
+
+  </ion-list>
+
+
+
+</ion-content>
+  </ion-menu>
+
+
+  <div class="ion-page" id="main-content">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title></ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding"></ion-content>
+  </div>
+  <ion-router-outlet id="main"></ion-router-outlet>
+  </ion-app>
+

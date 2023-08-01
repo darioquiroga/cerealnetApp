@@ -1,0 +1,7 @@
+{
+  "name": "Cerealnet",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
