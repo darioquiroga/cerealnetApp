@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { NavController } from '@ionic/angular';
 import { Configuraciones } from 'src/app/shared/constants/configuraciones';
 import { tipoSesion } from './shared/constants/tipoSesion';
 import { StorageService } from './services/storageService';
@@ -10,6 +11,7 @@ import { StorageService } from './services/storageService';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
+
   /*// Estado de los toggles (estan bindeados en el html)
   toggles: {
     togglePush: boolean;
@@ -94,8 +96,12 @@ export class AppComponent {
 
 
 
+  onClickPoliticas(){
 
+    this.router.navigateByUrl("/politica");
+}
   onClickCamionesDescarga() {
+    alert("onClickCamionesDescarga")
     this.router.navigateByUrl('http://www.cerealnet.com.ar/movil/CamionesDescargaH.aspx');
   }
 

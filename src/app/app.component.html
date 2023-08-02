@@ -70,14 +70,14 @@
 
 
   <ion-menu-toggle >
-    <ion-item lines="none" detail="false">
+    <ion-item lines="none" detail="false" button (click)="onClickCamionesDescarga()"  >
       <ion-icon aria-hidden="true" slot="start" [ios]="'reader-outline'" [md]="'reader-outline'"></ion-icon>
      <ion-label> Camiones a la descarga</ion-label>
     </ion-item>
   </ion-menu-toggle>
 
   <ion-menu-toggle >
-    <ion-item lines="none" detail="false">
+    <ion-item lines="none" detail="false" button (click)="onClickPoliticas()">
       <ion-icon aria-hidden="true" slot="start" [ios]="'shield-half-outline'" [md]="'shield-half-outline'"></ion-icon>
       <ion-label>Políticas de Privacidad</ion-label>
     </ion-item>

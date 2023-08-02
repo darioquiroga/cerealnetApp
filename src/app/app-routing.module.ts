@@ -51,6 +51,15 @@ const routes: Routes = [
     loadChildren: () => import('./pages/info/legales/legales.module').then( m => m.LegalesPageModule)
   },
 
+  {
+    path: 'descarga',
+    loadChildren: () => import('./pages/descarga/descarga.module').then( m => m.DescargaPageModule)
+  },
+  {
+    path: 'buscar-carta',
+    loadChildren: () => import('./pages/buscar-carta/buscar-carta.module').then( m => m.BuscarCartaPageModule)
+  },
+
 
 
 
