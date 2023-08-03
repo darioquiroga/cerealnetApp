@@ -1,8 +1,16 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>descarga</ion-title>
+    <button ion-button menuToggle>
+      <ion-icon class="menu-icon" name="menu"></ion-icon>
+    </button>
+    <ion-title>{{tituloCantidad}}</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-back-button defaultHref="/resumen"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">

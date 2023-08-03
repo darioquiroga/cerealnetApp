@@ -46,7 +46,7 @@ export class AppComponent {
   public appPages = [
 
     { title: 'Posición de día', url: '/resumen', icon: 'boat' },
-    { title: 'Descarga', url: '#', icon: 'sync' },
+    { title: 'Descarga', url: '/descarga', icon: 'sync' },
     { title: 'Buscar Carta', url: '/#', icon: 'search' },
     { title: 'Salir', url: '/logout', icon: 'log-out' },
 
@@ -94,7 +94,9 @@ export class AppComponent {
 
   }
 
-
+onClickDescarga(){
+  this.router.navigateByUrl("/descarga");
+}
 
   onClickPoliticas(){
 

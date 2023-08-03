@@ -22,7 +22,7 @@ ion-content {
   $head-table: #1d2b36;
   $important-info: #FFFFFF;
   $important-info--odd: #F7F7F7;
-  $element-extra: #FFFFFF;
+  $element-extra: black;
   $element-extra--odd: #1d2b36;
 
 ion-header ion-toolbar{
@@ -43,7 +43,7 @@ ion-fab {
     --background-hover: #a3e681;
     --border-radius: 10px;
     --box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-    --color: white;
+    --color: rgb(0, 0, 0);
     font-size: 9px;
   }
  button {
@@ -53,9 +53,10 @@ ion-fab {
   padding: 5px;
   text-align: end;
   margin-bottom: 1px;
-  color:white;
+  color:black;
   opacity: 0.9;
 }
+
   .fab-estado{
 
     .fab-in-list {
