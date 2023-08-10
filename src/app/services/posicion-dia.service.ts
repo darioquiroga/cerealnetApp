@@ -201,7 +201,7 @@ order(posicionCompletaDelDia: CartaPortePosicion[]) {
 filter(activeFilters: {estado: string, destino: string}, completeTableData: CartaPortePosicion[]) {
   const isPuertos = this.puertosService.getIfPuertos();
 
-  debugger
+
   // Antes que nada checkeo si el filtro es 'todos' retorno todas las cps
   if (!activeFilters.destino && !activeFilters.estado) {
       // Retorno la tabla parcial inicial
@@ -213,7 +213,7 @@ filter(activeFilters: {estado: string, destino: string}, completeTableData: Cart
 
       // Primero checkeo que tenga destino
       if (cartaPorte.destino) {
-          // debugger;
+
           return (activeFilters.estado && activeFilters.destino) ? //¿Existen ambas?
               (
                   (

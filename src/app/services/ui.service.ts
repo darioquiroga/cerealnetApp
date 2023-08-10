@@ -44,9 +44,38 @@ export class UiService {
           const mes = fechaDate.getMonth() + 1;
           return `${fechaDate.getDate() < 10 ? '0' : ''}${fechaDate.getDate()}/${mes < 10 ? '0' : ''}${mes}/${fechaDate.getFullYear()}`
       }
-  }*/ 
+  }*/
+// Formatea una fecha y devuelve foramto DD/MM/AAAA
+    // Puede recibir un Date o un string
+    formatDate(fecha: any) {
+      debugger
+      let fechaDate;
 
+      if (typeof fecha === 'string') {
+          fechaDate = new Date(fecha);
+      } else {
+          fechaDate = fecha;
+      };
 
+      if (fechaDate && (typeof fechaDate == 'object')) {
+          const mes = fechaDate.getMonth() + 1;
+          return `${fechaDate.getDate() < 10 ? '0' : ''}${fechaDate.getDate()}/${mes < 10 ? '0' : ''}${mes}/${fechaDate.getFullYear()}`
+      }
+      return fecha;
+  }
+ // Obtener la primer palabra de un string
+ getFirstWordOfString(cadena: String) {
+  // Separo la cadena en un array de sus palabras
+  let cadenaArray = cadena.split(' ');
+  // Me fijo si tiene palabras el array
+  if (cadenaArray && cadenaArray.length > 0) {
+      // Retorno la primera
+      return cadenaArray[0];
+  }else{
+    return "";
+  }
+
+}
   /**
      * Obtengo el id del estado de entrega segun el id de un estado en puertos
      */

@@ -8,7 +8,7 @@
   //--ion-color-primary-toolbar: #3dc2ff;
   --ion-color-primary-toolbar: #2C3A43;
   /** primary **/
-  --ion-color-primary: #FFF;
+  --ion-color-primary: white;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
@@ -123,12 +123,12 @@
 
 
 $colors: (
-  // primary:    #488aff,
-  secondary: #ffad5b,
-  // secondary:  #32db64,
+
+  secondary: #ede509,
+
   primary:  #1d2b36,
   danger:     #f53d3d,
-  light:      #f4f4f4,
+  light:      #cecece,
   dark:       #222,
   main-black: #1d2b36,
   main-gray: #858c92,
@@ -141,5 +141,5 @@ $colors: (
 );
 // spinner //
 ion-spinner.sc-ion-loading-md {
-  color: #F87D00;
+  color: #ede509;
 }

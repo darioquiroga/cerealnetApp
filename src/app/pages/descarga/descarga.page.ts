@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { async } from '@angular/core/testing';
+import { Component, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import * as _ from 'lodash';
 import { NavController, IonContent } from '@ionic/angular';
 // Constantes
@@ -11,11 +12,13 @@ import { CartaPortePosicion } from 'src/app/modelo/cartaPortePosicion';
 import { Usuario } from 'src/app/modelo/usuario';
 import { Perfil } from 'src/app/modelo/perfil';
 import { Tipo } from 'src/app/modelo/tipo';
-import { StorageService } from 'src/app/services/storageService';
 import { ResponsiveTableService } from 'src/app/services/responsive-table.service';
-//import { DescargaService } from '../../services/descargaService/descargaService';
-import { PuertosService } from 'src/app/services/puertos.service';
 import { state, style, transition, trigger } from '@angular/animations';
+import { textos } from 'src/app/shared/textos/textos';
+import { CartaPorteHistoria } from 'src/app/modelo/cartaPorteHistoria';
+import { DescargaService } from 'src/app/services/descarga.service';
+import { DatePipe } from '@angular/common';
+import { LoadingController } from '@ionic/angular';
 
 
 @Component({
@@ -48,6 +51,11 @@ export class DescargaPage implements OnInit {
  loading: boolean = false;
  // Estado de la busqeuda, si esta activa o no
  busquedaActiva: boolean = false;
+ // nada en posicion
+ nadaEnPosicion:String |undefined;
+ // nada en busqueda
+ nadaEnBusqueda: String | undefined;
+
  // Texto buscado (esta bindeado con el input)
  inputSearchBar: string | undefined;
  // Estados de cartas expandidas o contraidas
@@ -55,21 +63,173 @@ export class DescargaPage implements OnInit {
  // Tabla de cartas mutada (filtrada, achicada, etc)
  parcialTableData: CartaPortePosicion[] = [];
  // Tabla de cartas inicial completa
- completeTableData: CartaPortePosicion[] = [];
+  completeTableData :  CartaPortePosicion[] = [];
  // Cantidad de camiones en posición
  tituloCantidad: string | undefined;
  // Guardo el usuario activo en una variable
- usuarioActivo: Usuario | undefined;
+ usuarioActivo: Usuario | any;
  // Necesario para asegurarse que el user no se desplaza hacia abajo (infiniteScrollTop)
  lastScrollTop : any | undefined;
  // Fecha para filtrar la descarga
  filtroFecha: Date | undefined;
 
+ // respuesta del servicio de estado ok, ver luego si esto se quita
+ respuestaEstadoDescarga : string |  undefined;
+ istodoCargado : any
  // Spinner imagen descarga
- descargandoImagen: any;
-  constructor() { }
+  descargandoImagen: any;
+  datePicker: any;
+  @Input() cartaDePorte: CartaPorteHistoria | any;
+  constructor(
+    public responsiveTableService: ResponsiveTableService,
+    private loadingController: LoadingController,
+    private navCtrl: NavController,
+    private zone: NgZone,
+    //private datePicker: DatePicker,
+   // public puertosService: PuertosService,
+    public descargaService: DescargaService,
+    private uiService: UiService,
+  ) { }
+/*  if (!this.cartaDePorte : any) {
+    this.cartaDePorte = navParams.data.cartaDePorte;
+}*/
+  usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
+  async searchByText(ev: any, exclude?:any) {
+    // Activo spinner mientras busca
+
+    this.loading = false;
+    // Busco
+    let respuestaBusqueda = await this.responsiveTableService.searchByNroCartaOrPatente(ev, this.completeTableData);
+    debugger
+    // Defino si hay una búsqueda activa
+    this.busquedaActiva = respuestaBusqueda.busquedaActiva;
+    // Guardo la parcial table encontrada
+    this.parcialTableData = respuestaBusqueda.parcialTableEncontrada;
+    // Cierro todos los toggles de las cartas de porte
+    this.estadosToggleCarta = this.responsiveTableService.closeToggles(this.estadosToggleCarta);
+
+  }
+  // Abre o cierra la info extra de una carta de porte
+  toggleState(indice: any) {
+    this.estadosToggleCarta[indice] = !this.estadosToggleCarta[indice];
+  }
+   // Inicializa la tabla
+   async initTable() {
+  // Pongo el spinner
+    this.loading = true;
+    await this.uiService.presentLoading("Cargando...");
+
+    // Seteo un titulo por default
+    this.tituloCantidad = `Descarga de ayer`;
+    // Seteo la fecha por default en ayer
+    this.filtroFecha = new Date((new Date).getTime() - 24*60*60*1000);
+    // Busco la posicion y refresco
+     await this.refreshTable();
+
+}
+
+ /**
+     * Refresca la tabla
+     */
+ async doRefresh(refresher: any, exclude?:any) {
+  // Recargo toda la tabla
+  await this.refreshTable();
+  // Aviso que finalizó
+  refresher.complete();
+}
+/**
+     * Cambia la fecha de busqueda (SOLO FUNCIONA EN CELULAR, NO EN WEB)
+     */
+changeDate() {
+  this.datePicker.show({
+      date: new Date(),
+      mode: 'date',
+      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
+    }).then(
+      (      newDate: Date | undefined) => {
+          if (newDate) {
+              // Actualizo la fecha de búsqueda
+              this.filtroFecha = newDate;
+              // Refresco la tabla con la nueva fecha
+              this.refreshTable();
+          }
+      },
+      (      err: any) => console.log(err)
+  );
+
+}
+/**
+     * Refresca la tabla
+     */
+// Refresca la tabla
+async refreshTable() {
+
+   try {
+       // Pongo el spinner para descarga imagen en false
+       this.descargandoImagen = false;
+       // Pongo el spinner
+       this.loading = true;
+       // Pongo la tabla en 0 para que se vea el spinner
+       this.parcialTableData = [];
+       // Buscqueda activa false
+       this.busquedaActiva = false;
+       // Busco y guardo el usuario activo
+       if (typeof this.usuarioActivoJson === 'string') {
+         this.usuarioActivo =  JSON.parse(this.usuarioActivoJson);
+       }
+
+       // Obtengo posición del día
+
+    const formattedDate = new DatePipe('en-US').transform(this.filtroFecha, 'yyyy-MM-dd');
+    console.log(formattedDate);
+
+      this.descargaService.getDescarga(formattedDate, formattedDate).then(
+        async (resp: any)=>{
+          const data = JSON.stringify(resp)
+
+          this.completeTableData = JSON.parse(data)
+          let respSt = JSON.parse(JSON.stringify(resp.data));
+
+
+           // Guardo la cantidad en posicion (Posicion del dia)
+           let cantidadReg = this.completeTableData.length;
+           if (cantidadReg == undefined || cantidadReg == null){
+            cantidadReg = 0;
+           }
+           this.tituloCantidad = `Cantidad: ${cantidadReg}`;
+           this.respuestaEstadoDescarga =  respSt.descripcion;
+           await this.loadingController.dismiss();
+           // Guardo una parte parcial de la tabla completa (lazy load)
+           this.parcialTableData = this.responsiveTableService.getInitParcialTable(this.completeTableData);
+           // Inicializo los estados toggle de las cartas en false
+           this.estadosToggleCarta = this.responsiveTableService.initToggles(this.completeTableData.length);
+           // Texto buscado vacio
+           this.inputSearchBar = '';
+           // Saco el spinner
+           this.loading = false;
+
+
+        },
+        (error: any) => {
+
+         this.uiService.presentAlertInfo("Error: "+error);
+
+
+        })
+      }catch(error){
+        this.uiService.presentAlertInfo("Error: "+error);
+        await this.loadingController.dismiss();
+
+      };
+
+    }
+
 
   ngOnInit() {
+
+    this.nadaEnBusqueda =  textos.posicionDia.html.nadaEnPosicion;
+    this.nadaEnPosicion = textos.posicionDia.html.nadaEnBusqueda
+    this.initTable();
   }
 
 }

@@ -1,7 +1,7 @@
 export class RubroAnalisis {
-    idRubro: number;
-    descripcion: string;
-    descripcionCorta: string;
+    idRubro: number | undefined;
+    descripcion: string | undefined;
+    descripcionCorta: string | undefined;
 
     constructor(rubro: {
         idRubro: number;

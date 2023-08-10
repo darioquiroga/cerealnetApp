@@ -46,8 +46,8 @@ export class AppComponent {
   public appPages = [
 
     { title: 'Posición de día', url: '/resumen', icon: 'boat' },
-    { title: 'Descarga', url: '/descarga', icon: 'sync' },
-    { title: 'Buscar Carta', url: '/#', icon: 'search' },
+    { title: 'Descarga', url: '/descarga', icon: 'download' },
+    { title: 'Buscar Carta', url: '/buscar-carta', icon: 'search' },
     { title: 'Salir', url: '/logout', icon: 'log-out' },
 
   ];

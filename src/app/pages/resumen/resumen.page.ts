@@ -245,7 +245,6 @@ public getLogoEmpresa() {
 
 // Abre o cierra la info extra de una carta de porte
 toggleState(indice: string | number) {
-  alert("-> "+indice+" | "+this.estadosToggleCarta[indice])
   this.estadosToggleCarta[indice] = !this.estadosToggleCarta[indice];
 }
 

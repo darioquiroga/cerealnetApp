@@ -18,7 +18,7 @@ export class CartaPorteHistoria {
     kgTara: number;
     kgNeto: number;
     observacion: string;
-    destino: Destino;
+    destino: Destino | undefined;
     intervinientes: Interviniente [];
 
     entregador: Entregador;
@@ -196,9 +196,10 @@ export class CartaPorteHistoria {
             if (inter.tipoInterviniente.nombre === tipo) {
                 intervinienteBuscado = inter;
             }
+            return intervinienteBuscado;
         });
 
-        return intervinienteBuscado;
+
     }
 
 

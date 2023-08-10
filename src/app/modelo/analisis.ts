@@ -1,11 +1,11 @@
 import { RubroAnalisis } from "./rubroAnalisis";
 
 export class Analisis {
-    porcentaje: number;
-    kgsMerma: number;
-    porcentajeMerma: number;
-    cantidad: number;
-    rubro: RubroAnalisis;
+    porcentaje: number | undefined;
+    kgsMerma: number | undefined;
+    porcentajeMerma: number | undefined;
+    cantidad: number | undefined;
+    rubro: RubroAnalisis | undefined;
 
     constructor(analisis: {
         porcentaje: number;
@@ -26,7 +26,7 @@ export class Analisis {
             this.cantidad = analisis.cantidad;
             this.rubro = new RubroAnalisis(analisis.rubro);
         } else {
-            this.rubro = new RubroAnalisis(null);
+           // this.rubro = null;
         }
     }
 }

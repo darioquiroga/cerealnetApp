@@ -14,7 +14,7 @@ export class PuertosService {
   getIfPuertos = () => {
     if (typeof this.usuarioActivoJson === 'string') {
       const usuario = JSON.parse(this.usuarioActivoJson);
-      const usuarioActivo: any = localStorage.getItem("UsuarioActual");
+      const usuarioActivo: any =usuario
       return usuarioActivo && usuarioActivo.tipo && usuarioActivo.tipo.id === tiposUsuarios.PUERTOS;
     }
 
