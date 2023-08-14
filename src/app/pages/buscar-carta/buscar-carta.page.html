@@ -21,8 +21,8 @@
 
 
 
-
-<div *ngIf="checkIfIsPatente()" class="filtro-fechas-container">
+<!--  *ngIf="checkIfIsPatente()" -->
+<div class="filtro-fechas-container">
   <ion-item id="open-desde" button="true">
     <ion-label position="stacked">Desde el</ion-label>
     <ion-input value="{{ filtroFechas.desde | date: 'dd MMM yyyy' }}" id="date"></ion-input>

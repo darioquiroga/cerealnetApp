@@ -1,3 +1,4 @@
+import { AppComponent } from './../../app.component';
 import { MiCuentaPage } from './../mi-cuenta/mi-cuenta.page';
 import { Component,   NgZone, OnInit, ViewChild, inject } from '@angular/core';
 import {  IonContent  } from '@ionic/angular';

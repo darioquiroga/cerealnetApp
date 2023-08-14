@@ -5,106 +5,158 @@ import { NavController } from '@ionic/angular';
 import { Configuraciones } from 'src/app/shared/constants/configuraciones';
 import { tipoSesion } from './shared/constants/tipoSesion';
 import { StorageService } from './services/storageService';
+import { modosNotificacion } from './shared/constants/modosNotificacion';
+import { Observable, Subject } from 'rxjs';
+
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-
-  /*// Estado de los toggles (estan bindeados en el html)
-  toggles: {
-    togglePush: boolean;
-    toggleMail: boolean;
-  }
-  // Modo notificacion actual
-  modoNotificacion: number;
-  */
-  // Tipo de sesion (tipo de usuario logueado)
-
-
-
-  constructor(private platform: Platform,
-    private router: Router,
-    ) {
-    /*
-    Este código elimina todas las entradas del caché de la aplicación cuando se carga la plataforma. De esta manera,
-    se asegura de que la aplicación siempre esté utilizando los archivos más recientes y no los archivos almacenados en caché.
-    */
-    this.initializeApp();
-    this.platform.ready().then(() => {
-      if (window.caches) {
-        caches.keys().then(function (names) {
-          for (let name of names) caches.delete(name);
-        });
-      }
-    });
-  }
-  // Mantengo actualizado este json acá en el javascript
   public usuarioActivo: { tipo: string; nombre: string; } | undefined;
-  public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
-  public appPages = [
 
+  constructor(private platform: Platform, private router: Router) {
+    this.initializeApp();
+  }
+
+  // Mantengo actualizado este json acá en el javascript
+  public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
+
+  public appPages = [
     { title: 'Posición de día', url: '/resumen', icon: 'boat' },
     { title: 'Descarga', url: '/descarga', icon: 'download' },
     { title: 'Buscar Carta', url: '/buscar-carta', icon: 'search' },
-    { title: 'Salir', url: '/logout', icon: 'log-out' },
 
   ];
-  public temp = "";
+  public temp = '';
 
-  public labels = ["etiquetas 1", 'etiqueta 2'];
-
-
+  public labels = ['etiquetas 1', 'etiqueta 2'];
 
   initializeApp() {
-    this.usuarioActivo = { tipo: '', nombre: '' };
+    this.usuarioActivo =  { tipo: '', nombre: '' };
+
     this.platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      //this.statusBar.styleDefault();
-      //this.splashScreen.hide();
+
       this.refreshUsuarioActivo();
+
     });
+
+  }
+
+  // Subcjet del tipo de sesion. A través de este se observará cambios en el tipo de sesion
+  private tipoSesion$ = new Subject<string>();
+
+  // Cambia el tipo de sesion
+  setTipoSesion(tipoSesion: string) {
+    this.tipoSesion$.next(tipoSesion);
+  }
+
+  // Obtiene el tipo de sesion como un observable
+  getTipoSesion$(): Observable<string> {
+    return this.tipoSesion$.asObservable();
   }
 
   refreshUsuarioActivo() {
 
     if (typeof this.usuarioActivoJson === 'string') {
       const usuario = JSON.parse(this.usuarioActivoJson);
+      this.getTipoSesion().then((tipo) => {
+        // Si tipo es nromal, entonces el usaurio logueadoe es normal
+        if (
+          tipo === tipoSesion.NORMAL ||
+          tipo === tipoSesion.PUERTOS ||
+          tipo === tipoSesion.INVITADO
+        ) {
+          this.usuarioActivo = {
+            tipo: usuario.tipo.descripcion,
+            nombre: usuario.nombre,
+          };
+        } else {
+          // Sino, es tipo invitado (camionero)
+          this.usuarioActivo = {
+            tipo: tipoSesion.INVITADO,
+            nombre: usuario.nombre,
+          };
+        }
+      });
+    }
+  }
 
-         //  ver el tipo de sesion que inicia aqui (traer desde el storage el tipo de sesion)
-      let tipo =  "NORMAL";
-      // Si tipo es nromal, entonces el usaurio logueadoe es normal
-      if (tipo === tipoSesion.NORMAL || tipo === tipoSesion.PUERTOS) {
-        this.usuarioActivo = {
-          tipo: usuario.tipo.descripcion,
-          nombre: usuario.nombre
-        };
+  // Retorno el tipo de sesion (normal o camionero) (tipo de usuario logueado)
+  async getTipoSesion() {
+
+    if (typeof this.usuarioActivoJson === 'string') {
+      const usuario = JSON.parse(this.usuarioActivoJson);
+      if (usuario) {
+        if (usuario.idUsuario) {
+          return tipoSesion.NORMAL;
+        } else {
+          // Checkeo si es puertos
+          if (usuario.tipo.id === usuario.PUERTOS) {
+            return tipoSesion.PUERTOS;
+          } else {
+            return tipoSesion.INVITADO;
+          }
+        }
       } else {
-        // Sino, es tipo invitado (camionero)
-        this.usuarioActivo = {
-          tipo: tipoSesion.INVITADO,
-          nombre: usuario.nombre
-        };
+        return tipoSesion.NO_USER;
       }
-    ;
-
+    }else{
+      return "";
+    }
   }
 
+  /**
+   * @description // Obtiene los toggles iniciales cuando se loguea el usuario
+   */
+  async getInitToggles() {
+    // Creo el objeto a retornar (por dfecto queda modonotificacion none)
+    if (typeof this.usuarioActivoJson === 'string') {
+      const usuarioActivo = JSON.parse(this.usuarioActivoJson);
+      let toggles = {
+        togglePush: false,
+        toggleMail: false,
+      };
+
+      // Obtengo el modo de notificacion del user activo
+
+      const modoNotificacion = usuarioActivo.modoNotificacion;
+
+      // Si es push o push and mail, togglepush tiene q ser true
+      if (
+        modoNotificacion === modosNotificacion.PUSH ||
+        modoNotificacion === modosNotificacion.PUSH_AND_MAIL
+      ) {
+        toggles.togglePush = true;
+      }
+
+      // Si es mail o push and mail, togglemail tiene q ser true
+      if (
+        modoNotificacion === modosNotificacion.MAIL ||
+        modoNotificacion === modosNotificacion.PUSH_AND_MAIL
+      ) {
+        toggles.toggleMail = true;
+      }
+      // Retorno los toggles y el modoNotificacion
+      return { toggles: toggles, modoNotificacion: modoNotificacion };
+    } else {
+      return '';
+    }
   }
 
-onClickDescarga(){
-  this.router.navigateByUrl("/descarga");
-}
-
-  onClickPoliticas(){
-
-    this.router.navigateByUrl("/politica");
-}
+  onClickDescarga() {
+    this.router.navigateByUrl('/descarga');
+  }
+  onClickSalir() {
+    this.router.navigateByUrl('/logout');
+  }
+  onClickPoliticas() {
+    this.router.navigateByUrl('/politica');
+  }
   onClickCamionesDescarga() {
-    alert("onClickCamionesDescarga")
-    this.router.navigateByUrl('http://www.cerealnet.com.ar/movil/CamionesDescargaH.aspx');
+    alert('onClickCamionesDescarga');
+    this.router.navigateByUrl( 'http://www.cerealnet.com.ar/movil/CamionesDescargaH.aspx');
   }
-
 }

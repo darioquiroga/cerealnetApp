@@ -98,6 +98,7 @@ export class LoginPage implements OnInit {
       this.uiService.presentAlertInfo('Por favor ingrese eL usuario y la contraseña');
       return;
     }
+
     await this.uiService.presentLoading("Conectando...");
     if (tipo === tipoSesion.NORMAL){
       // Si no es camionero, entonces me logueo

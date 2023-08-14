@@ -1,21 +1,27 @@
+
 import { Injectable } from '@angular/core';
 import { tiposUsuarios } from '../shared/constants/tiposUsuarios';
 import { CartaPortePosicion } from '../modelo/cartaPortePosicion';
+import { UiService } from './ui.service';
 @Injectable({
   providedIn: 'root'
 })
 export class PuertosService {
   public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
-  constructor() { }
+  constructor(
+    private uiService : UiService
+  ) {
+
+  }
   /**
      * Retorna TRUE si el usuario activo es tipo PUERTOS
      */
 
   getIfPuertos = () => {
     if (typeof this.usuarioActivoJson === 'string') {
-      const usuario = JSON.parse(this.usuarioActivoJson);
-      const usuarioActivo: any =usuario
+      const usuarioActivo: any = this.uiService.getUsuarioActivoSync();
       return usuarioActivo && usuarioActivo.tipo && usuarioActivo.tipo.id === tiposUsuarios.PUERTOS;
+
     }
 
 }
@@ -31,6 +37,9 @@ checkIfAccionable = (carta: CartaPortePosicion) => {
         (carta.porteTipo !== 3)
     )
 }
+
+
+
 
 
 

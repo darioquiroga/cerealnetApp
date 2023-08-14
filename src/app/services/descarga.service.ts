@@ -64,13 +64,11 @@ export class DescargaService {
      const token: any = currentToken;
      let parameters:URLSearchParams = new URLSearchParams();
       parameters.set("puertos", isPuertos);
-      let op = "descarga"
-      if (isPuertos == true){
-        op = "historia";
-      }else{
-        op = "descarga";
-      }
-      const url = `${this.getURLServicio()}?`+parameters+`&`+op;
+      parameters.set("fechaDesde", fechaDesde)
+      parameters.set("fechaHasta", fechaHasta)
+
+
+      const url = `${this.getURLServicio()}?`+parameters
 
       const httpOptions = {
         headers: new HttpHeaders({
@@ -131,7 +129,8 @@ export class DescargaService {
     // if (isPuertos) {
     //     return 'fafa'
     // } else {
-        let nombreDestinoAcortado = this.uiService.getFirstWordOfString(carta.getIntervinienteByTipo('DESTINO').nombre);
+
+        let nombreDestinoAcortado = ""//this.uiService.getFirstWordOfString(carta.plantaDestino.descripcion);
 
         if (nombreDestinoAcortado && carta.plantaDestino.descripcion) {
             return `${nombreDestinoAcortado}, ${carta.plantaDestino.descripcion}`;
@@ -149,8 +148,14 @@ export class DescargaService {
     */
   private getURLServicio() {
     const puertos = this.puertosService.getIfPuertos();
-
-    return DescargaService.URLSERVICIO + `/cartaPorte/`;
+    const isPuertos = this.puertosService.getIfPuertos();
+    let op = "";
+    if (isPuertos === false){
+      op = "descarga";
+    }else{
+      op = "historia";
+    }
+    return DescargaService.URLSERVICIO + `/cartaPorte/`+op
 
   }
 

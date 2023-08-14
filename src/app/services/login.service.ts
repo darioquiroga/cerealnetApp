@@ -10,7 +10,6 @@ import { StorageService } from './storageService';
 import { IonRefresher } from '@ionic/angular';
 import { Observable, timeout } from 'rxjs';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -28,63 +27,55 @@ export class LoginService {
   public versionCerealnet: string | any;
   public configuraciones = Configuraciones;
   public msgLoginRepuesta: string | any;
-  public timeOut : any;
+  public timeOut: any;
   constructor(
-    private http: HttpClient,
-    //private storageService: StorageService,
-   ) {}
-//  this.http.setServerTrustMode('nocheck')
+    private http: HttpClient
+  ) //private storageService: StorageService,
+  {}
+
+  //  this.http.setServerTrustMode('nocheck')
   async loginUser(login: Login, remember?: boolean) {
     // Checkeo si es cerealnet o puertos
     const isPuertos = login.usuario[0] === '*';
     // Mando el pushId al login y mando un evento para activar el modo de notificacion del usaurio
-    const pushId: string = "noPushId";//await this.notificacionService.getPushId();
+    const pushId: string = 'noPushId'; //await this.notificacionService.getPushId();
     // Me logueo y obtengo los datos de logueo
     //const dataLogin = await this.authService.login(usuario, clave, pushId, isPuertos);
 
-
-
     return new Promise(async (resolve, reject) => {
       try {
-       const cleanUser = isPuertos ? login.usuario.substring(1) : login.usuario;
-        const hash = login.clave;//CryptoJS.MD5(login.clave);
+        const cleanUser = isPuertos
+          ? login.usuario.substring(1)
+          : login.usuario;
+        const hash = login.clave; //CryptoJS.MD5(login.clave);
         const url = this.getURLServicio(login.usuario);
 
-        const params = {pushId: "noPushId"};
+        const params = { pushId: 'noPushId' };
         const httpOptions = {
           headers: new HttpHeaders({
-
-          clave: hash.toString(),
+            clave: hash.toString(),
           }),
-
         };
 
-        this.http.post(url,  params, httpOptions).subscribe({
+        this.http.post(url, params, httpOptions).subscribe({
           next: (data: any) => {
             // data is already a JSON object
 
+            if (data.token != '') {
+              this.usuarioActual = data.usuario;
+              this.usuarioActual = new Usuario(this.usuarioActual);
+              this.usuarioToken = isPuertos ? data.acceso.token : data.token;
 
-              if (data.token !=  "") {
-                this.usuarioActual = data.usuario;
-                this.usuarioActual = new Usuario(this.usuarioActual);
-                this.usuarioToken =  isPuertos ? data.acceso.token : data.token;
-                this.logueado = true;
+              this.saveStorage('usuario', this.usuarioActual);
+              this.saveStorage('token', this.usuarioToken);
+              this.logueado = true;
 
-                //En caso de que se haya pedido recordar el usuario:
-               // this.saveStorage(control);
-               //this.storageService.setUsuarioActivo(this.usuarioActual);
-               //this.saveStorage(isPuertos ? data.acceso.token : data.token)
-               this.saveStorage("usuario", this.usuarioActual);
-               this.saveStorage("token", this.usuarioToken);
-
-
-                resolve(true);
-              } else {
-                resolve(false);
-                //reject(this.usuarioActual.control?.descripcion ?? 'Error al autenticar.');
-              }
-              resolve (this.usuarioActual)
-
+              resolve(true);
+            } else {
+              resolve(false);
+              //reject(this.usuarioActual.control?.descripcion ?? 'Error al autenticar.');
+            }
+           // resolve(this.usuarioActual);
           },
 
           error: (error: any) => {
@@ -99,6 +90,7 @@ export class LoginService {
       }
     });
   }
+
 
   recuperarClave(login: Login) {
     return new Promise(async (resolve, reject) => {
@@ -132,8 +124,6 @@ export class LoginService {
     devuelve true o false según se pudo o no.
   */
   async trySavedLogin() {
-
-
     //return new Promise(async (resolve, reject) => {
     //  try {
     let credenciales: any = localStorage.getItem('usuarioActual');
@@ -226,16 +216,11 @@ export class LoginService {
   }
 
   saveStorage(queGrabo: string, obj: any) {
-    if (queGrabo == "token"){
-
+    if (queGrabo == 'token') {
       localStorage.setItem('token', JSON.stringify(obj));
-
-    }else if(queGrabo == "usuario"){
+    } else if (queGrabo == 'usuario') {
       localStorage.setItem('usuarioActual', JSON.stringify(this.usuarioActual));
     }
-
-
-
   }
   deleteStorage() {
     localStorage.removeItem('token');
@@ -248,21 +233,19 @@ export class LoginService {
   }
 
   public validarServicioSiEstaDisponible() {
-
-   console.log('Valido servicio -> '+this.getURLDummy());
-   const url = `${this.getURLDummy()}`;
+    console.log('Valido servicio -> ' + this.getURLDummy());
+    const url = `${this.getURLDummy()}`;
     const httpOptions = {
       headers: new HttpHeaders({}),
     };
-    this.http.get(url).pipe(
-    ).subscribe(
-      (resp) => {
-
+    this.http
+      .get(url)
+      .pipe()
+      .subscribe((resp) => {
         this.servicioDisponible = true;
-      }
-    );
-
-  } catch (error: any) {
+      });
+  }
+  catch(error: any) {
     const dataError = JSON.parse(error.error);
     this.servicioDisponible = false;
   }

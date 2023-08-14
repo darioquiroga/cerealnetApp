@@ -96,13 +96,6 @@ export class BuscarCartaPage implements OnInit {
   }
 
 
-  // Cambiar alguna fecha, abre un datepicker (solo funciona en el celular, no en la web)
-    // En el parametro se le informa al método si está cambiando 'desde' o 'hasta'
-    changeDate(desdeOHasta: String) {
-      alert("changeDate -> "+desdeOHasta)
-
-
-  }
 
   // Checkear si nroCartaBuscada tiene una letra (esto implicaría que es una patente, por lo cual debo mostrar las fechas de intervalo)
   checkIfIsPatente() {

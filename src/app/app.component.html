@@ -41,10 +41,10 @@
       </ion-list>
 
       <ion-list id="inbox-list">
-        <ion-list-header>
+        <ion-list-header style="font-size: 12px;">
            Notificaciones
         </ion-list-header>
-
+        <hr>
         <ion-menu-toggle>
           <ion-item>
             <ion-icon aria-hidden="true" slot="start" [ios]="'notifications-outline'" [md]="'notifications-outline'"></ion-icon>
@@ -64,15 +64,16 @@
 
 
  <ion-list id="inbox-list">
-  <ion-list-header>
+  <ion-list-header style="font-size: 12px;">
      Otros
   </ion-list-header>
-
+  <hr>
 
   <ion-menu-toggle >
-    <ion-item lines="none" detail="false" button (click)="onClickCamionesDescarga()"  >
+    <ion-item lines="none" detail="false"  >
       <ion-icon aria-hidden="true" slot="start" [ios]="'reader-outline'" [md]="'reader-outline'"></ion-icon>
-     <ion-label> Camiones a la descarga</ion-label>
+     <ion-label><a href="http://www.cerealnet.com.ar/movil/CamionesDescargaH.aspx" target="_blank">Camiones a la descarga</a></ion-label>
+
     </ion-item>
   </ion-menu-toggle>
 
@@ -80,6 +81,14 @@
     <ion-item lines="none" detail="false" button (click)="onClickPoliticas()">
       <ion-icon aria-hidden="true" slot="start" [ios]="'shield-half-outline'" [md]="'shield-half-outline'"></ion-icon>
       <ion-label>Políticas de Privacidad</ion-label>
+    </ion-item>
+  </ion-menu-toggle>
+
+
+  <ion-menu-toggle >
+    <ion-item lines="none" detail="false" button (click)="onClickSalir()">
+      <ion-icon aria-hidden="true" slot="start" [ios]="'log-out'" [md]="'log-out'"></ion-icon>
+      <ion-label>Salir</ion-label>
     </ion-item>
   </ion-menu-toggle>
 

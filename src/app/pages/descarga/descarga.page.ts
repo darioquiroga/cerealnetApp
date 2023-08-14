@@ -100,7 +100,7 @@ export class DescargaPage implements OnInit {
     this.loading = false;
     // Busco
     let respuestaBusqueda = await this.responsiveTableService.searchByNroCartaOrPatente(ev, this.completeTableData);
-    debugger
+
     // Defino si hay una búsqueda activa
     this.busquedaActiva = respuestaBusqueda.busquedaActiva;
     // Guardo la parcial table encontrada
@@ -141,21 +141,8 @@ export class DescargaPage implements OnInit {
      * Cambia la fecha de busqueda (SOLO FUNCIONA EN CELULAR, NO EN WEB)
      */
 changeDate() {
-  this.datePicker.show({
-      date: new Date(),
-      mode: 'date',
-      androidTheme: this.datePicker.ANDROID_THEMES.THEME_HOLO_DARK
-    }).then(
-      (      newDate: Date | undefined) => {
-          if (newDate) {
-              // Actualizo la fecha de búsqueda
-              this.filtroFecha = newDate;
-              // Refresco la tabla con la nueva fecha
-              this.refreshTable();
-          }
-      },
-      (      err: any) => console.log(err)
-  );
+
+ this.refreshTable();
 
 }
 /**
@@ -180,34 +167,34 @@ async refreshTable() {
 
        // Obtengo posición del día
 
-    const formattedDate = new DatePipe('en-US').transform(this.filtroFecha, 'yyyy-MM-dd');
-    console.log(formattedDate);
+    const formattedDate = new DatePipe('en-US').transform(this.filtroFecha, 'yyyyMMdd');
+
 
       this.descargaService.getDescarga(formattedDate, formattedDate).then(
         async (resp: any)=>{
-          const data = JSON.stringify(resp)
-
-          this.completeTableData = JSON.parse(data)
-          let respSt = JSON.parse(JSON.stringify(resp.data));
 
 
+          let response = JSON.parse(JSON.stringify(resp.data));
+          this.completeTableData = response
            // Guardo la cantidad en posicion (Posicion del dia)
            let cantidadReg = this.completeTableData.length;
            if (cantidadReg == undefined || cantidadReg == null){
             cantidadReg = 0;
            }
            this.tituloCantidad = `Cantidad: ${cantidadReg}`;
-           this.respuestaEstadoDescarga =  respSt.descripcion;
-           await this.loadingController.dismiss();
+           this.respuestaEstadoDescarga =  response.descripcion;
+
+
            // Guardo una parte parcial de la tabla completa (lazy load)
-           this.parcialTableData = this.responsiveTableService.getInitParcialTable(this.completeTableData);
+           this.parcialTableData = this.completeTableData;//this.responsiveTableService.getInitParcialTable(this.completeTableData);
+
            // Inicializo los estados toggle de las cartas en false
            this.estadosToggleCarta = this.responsiveTableService.initToggles(this.completeTableData.length);
            // Texto buscado vacio
            this.inputSearchBar = '';
            // Saco el spinner
            this.loading = false;
-
+           await this.loadingController.dismiss();
 
         },
         (error: any) => {
