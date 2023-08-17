@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" >
+<ion-content [fullscreen]="true" class="body" >
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title>Buscar carta de porte</ion-title>
@@ -15,14 +15,11 @@
   </ion-header>
 
 
-  <div  class="buscar-content">
+  <div  class="buscar-content" *ngIf="!loading" >
 
 
 
-
-
-<!--  *ngIf="checkIfIsPatente()" -->
-<div class="filtro-fechas-container">
+<div class="filtro-fechas-container" *ngIf="checkIfIsPatente()" >
   <ion-item id="open-desde" button="true">
     <ion-label position="stacked">Desde el</ion-label>
     <ion-input value="{{ filtroFechas.desde | date: 'dd MMM yyyy' }}" id="date"></ion-input>
@@ -47,11 +44,11 @@
   </ion-popover>
 </ion-item>
 
-     </div>
+ </div>
 
     <ion-item class="busqueda-container">
-        <ion-label color="primary" floating>{{buscaCartaTitulo}}</ion-label>
-        <ion-input [(ngModel)]="nroCartaOPatenteBuscada"></ion-input>
+        <ion-label color="#1d2b36" floating>{{buscaCartaTitulo}}</ion-label>
+        <ion-input  [(ngModel)]="nroCartaOPatenteBuscada"></ion-input>
     </ion-item>
 
     <div class="btn-container">

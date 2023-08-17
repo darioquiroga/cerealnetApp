@@ -59,6 +59,10 @@ const routes: Routes = [
     path: 'buscar-carta',
     loadChildren: () => import('./pages/buscar-carta/buscar-carta.module').then( m => m.BuscarCartaPageModule)
   },
+  {
+    path: 'detalle-carta-porte',
+    loadChildren: () => import('./pages/detalle-carta-porte/detalle-carta-porte.module').then( m => m.DetalleCartaPortePageModule)
+  },
 
 
 

@@ -147,7 +147,7 @@ export class DescargaService {
     * Esta funcion devuelve la URL del servicio
     */
   private getURLServicio() {
-    const puertos = this.puertosService.getIfPuertos();
+
     const isPuertos = this.puertosService.getIfPuertos();
     let op = "";
     if (isPuertos === false){

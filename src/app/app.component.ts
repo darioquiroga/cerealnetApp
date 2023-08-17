@@ -35,10 +35,10 @@ export class AppComponent {
   public labels = ['etiquetas 1', 'etiqueta 2'];
 
   initializeApp() {
-    this.usuarioActivo =  { tipo: '', nombre: '' };
 
+    /*  this.usuarioActivo =  { tipo: '', nombre: '' };*/
     this.platform.ready().then(() => {
-
+      debugger
       this.refreshUsuarioActivo();
 
     });

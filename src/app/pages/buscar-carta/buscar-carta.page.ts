@@ -61,6 +61,7 @@ export class BuscarCartaPage implements OnInit {
           // Me fijo si trajo más de una
           await this.loadingController.dismiss();
           if (cartasEncontradas.length > 1) {
+
             // Mnando las cartas a mostrar en CartasEncontradasPage
             //this.navCtrl.push(CartasEncontradasPage, {cartasEncontradas: cartasEncontradas});
           } else {
@@ -69,6 +70,7 @@ export class BuscarCartaPage implements OnInit {
           }
         });
     } catch (err: any) {
+      debugger
       if (err.name == tiposErrores.timeoutError) {
         this.uiService.presentAlertInfo(
           'Error: ' +
