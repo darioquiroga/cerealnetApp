@@ -7,7 +7,7 @@ import { Localidad } from "./localidad";
 import { Calidad } from "./calidad";
 import { Planta } from "./planta";
 import { TipoInterviniente } from "./tipoInterviniente";
-
+import { Type } from 'class-transformer';
 export class CartaPortePosicion {
     nroCarta: number;
     nroVagon: number;
@@ -21,7 +21,10 @@ export class CartaPortePosicion {
     codEntre: number;
     kgNetoProcedencia: number;
     intervinientes: Interviniente [];
+   // entregador: Entregador;
+    @Type(() => Entregador)
     entregador: Entregador;
+
     cereal: Cereal;
     localidadProcedencia: Localidad;
     turno: number;

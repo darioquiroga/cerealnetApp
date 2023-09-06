@@ -225,11 +225,8 @@
 
 
 </div>
-</ion-card>
 
-<div class="spinner-container">
-  <ion-spinner></ion-spinner>
-</div>
+</ion-card>
 <div class="empty-table" *ngIf="!loading && (!parcialTableData || parcialTableData.length <= 0)">
 
   <div *ngIf="inputSearchBar === '';then nadaPosi else nadaBusqueda"></div>
@@ -238,11 +235,10 @@
       <div class="message-empty">Nada en posición</div>
   </ng-template>
   <ng-template #nadaBusqueda>
-      <div class="message-empty">xxxx</div>
+      <div class="message-empty">Sin resultados</div>
   </ng-template>
 
-
-
 </div>
+
 
 </ion-content>

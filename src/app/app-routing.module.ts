@@ -64,6 +64,46 @@ const routes: Routes = [
     loadChildren: () => import('./pages/detalle-carta-porte/detalle-carta-porte.module').then( m => m.DetalleCartaPortePageModule)
   },
 
+  {
+    path: 'carta-porte-encontradas',
+    loadChildren: () => import('./pages/carta-porte-encontradas/carta-porte-encontradas.module').then( m => m.CartaPorteEncontradasPageModule)
+  },
+  {
+    path: 'camionero',
+    loadChildren: () => import('./camionero/camionero.module').then( m => m.CamioneroPageModule)
+  },
+  {
+    path: 'camionero',
+    loadChildren: () => import('./no-login/camionero/camionero.module').then( m => m.CamioneroPageModule)
+  },
+  {
+    path: 'registro',
+    loadChildren: () => import('./camionero/registro/registro.module').then( m => m.RegistroPageModule)
+  },
+  {
+    path: 'camionero',
+    loadChildren: () => import('./no-login/camionero/camionero.module').then( m => m.CamioneroPageModule)
+  },
+  {
+    path: 'registro',
+    loadChildren: () => import('./app/pages/no-login/camionero/registro/registro.module').then( m => m.RegistroPageModule)
+  },
+  {
+    path: 'camionero-registro',
+    loadChildren: () => import('./camionero-registro/camionero-registro.module').then( m => m.CamioneroRegistroPageModule)
+  },
+  {
+    path: 'camioniero-registro',
+    loadChildren: () => import('./camioniero-registro/camioniero-registro.module').then( m => m.CamionieroRegistroPageModule)
+  },
+  {
+    path: 'camionero-registro',
+    loadChildren: () => import('./pages/camionero-registro/camionero-registro.module').then( m => m.CamioneroRegistroPageModule)
+  },
+  {
+    path: 'buscar-camion',
+    loadChildren: () => import('./pages/buscar-camion/buscar-camion.module').then( m => m.BuscarCamionPageModule)
+  },
 
 
 

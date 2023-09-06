@@ -23,7 +23,13 @@ export class UiService {
     document.body.appendChild(alert);
     await alert.present();
   }
-
+// Insertar un string en el indice que quieras de cualuqier string
+insertString(index: number, stringBase: string, stringInsertar: string) {
+  if (index > 0)
+      return stringBase.substring(0, index) + stringInsertar + stringBase.substring(index, stringBase.length);
+  else
+      return stringInsertar + stringBase;
+};
   async presentLoading(msg: string) {
     const loading = await this._loadingController.create({
       cssClass: 'my-custom-class',
@@ -48,6 +54,8 @@ export class UiService {
       return `${fechaDate.getDate() < 10 ? '0' : ''}${fechaDate.getDate()}/${
         mes < 10 ? '0' : ''
       }${mes}/${fechaDate.getFullYear()}`;
+
+
     }
     return fecha;
   }

@@ -7,6 +7,7 @@ import { tipoSesion } from './shared/constants/tipoSesion';
 import { StorageService } from './services/storageService';
 import { modosNotificacion } from './shared/constants/modosNotificacion';
 import { Observable, Subject } from 'rxjs';
+import { VariableBinding } from '@angular/compiler';
 
 
 @Component({
@@ -16,6 +17,8 @@ import { Observable, Subject } from 'rxjs';
 })
 export class AppComponent {
   public usuarioActivo: { tipo: string; nombre: string; } | undefined;
+
+
 
   constructor(private platform: Platform, private router: Router) {
     this.initializeApp();
@@ -31,16 +34,11 @@ export class AppComponent {
 
   ];
   public temp = '';
-
   public labels = ['etiquetas 1', 'etiqueta 2'];
-
   initializeApp() {
 
-    /*  this.usuarioActivo =  { tipo: '', nombre: '' };*/
     this.platform.ready().then(() => {
-      debugger
       this.refreshUsuarioActivo();
-
     });
 
   }

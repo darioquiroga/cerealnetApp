@@ -166,7 +166,7 @@ async refreshTable() {
        }
 
        // Obtengo posición del día
-
+      
     const formattedDate = new DatePipe('en-US').transform(this.filtroFecha, 'yyyyMMdd');
 
 
