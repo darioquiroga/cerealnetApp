@@ -1,12 +1,15 @@
 import { timeout } from 'rxjs';
 import { tiposErrores } from './../../shared/textos/tiposErrores';
-import { Component, OnInit } from '@angular/core';
+import {  OnInit, Component } from '@angular/core';
 import { UiService } from 'src/app/services/ui.service';
 import { CartaPorteHistoria } from 'src/app/modelo/cartaPorteHistoria';
 import { Pipe } from '@angular/core';
 import { NavController, NavParams, LoadingController } from '@ionic/angular';
+
 import { BuscarCartaPorteService } from 'src/app/services/buscar-carta-porte.service';
 import { textos } from 'src/app/shared/textos/textos';
+import { DetalleCartaPortePage } from '../detalle-carta-porte/detalle-carta-porte.page';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-buscar-carta',
@@ -33,7 +36,9 @@ export class BuscarCartaPage implements OnInit {
     private navCtrl: NavController,
     private buscarCartaPorteService: BuscarCartaPorteService,
     private uiService: UiService,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private router: Router,
+
 
   ) {
     const ayer = new Date(Date.now() - 86400000); // that is: 24 * 60 * 60 * 1000
@@ -50,7 +55,7 @@ export class BuscarCartaPage implements OnInit {
     try {
       // Pongo el spinner
       this.loading = true;
-      await this.uiService.presentLoading("Buscando carta "+this.nroCartaOPatenteBuscada);
+      await this.uiService.presentLoading("Buscando");
       // await this.loadingController.dismiss();
       // Busco las cartas
 
@@ -59,18 +64,22 @@ export class BuscarCartaPage implements OnInit {
         .getCartaPorte(this.nroCartaOPatenteBuscada, this.filtroFechas)
         .then(async (cartasEncontradas: any) => {
           // Me fijo si trajo más de una
+
           await this.loadingController.dismiss();
-          if (cartasEncontradas.length > 1) {
+          if (cartasEncontradas.data.length > 1) {
 
             // Mnando las cartas a mostrar en CartasEncontradasPage
-            //this.navCtrl.push(CartasEncontradasPage, {cartasEncontradas: cartasEncontradas});
+
+            this.router.navigateByUrl("/carta-porte-encontradas", {state: {cartasEncontradas: cartasEncontradas}})
+
           } else {
-            // Como es una sola se la mando a detalleCartaPortePage para que la presente
-            // this.navCtrl.push(DetalleCartaPortePage, {cartaDePorte: cartasEncontradas[0]});
+            debugger
+            // encuen tra solo 1
+            this.router.navigateByUrl("/detalle-carta-porte", {state: {cartasEncontradas: cartasEncontradas.data[0]}});
           }
         });
     } catch (err: any) {
-      debugger
+
       if (err.name == tiposErrores.timeoutError) {
         this.uiService.presentAlertInfo(
           'Error: ' +
@@ -109,6 +118,7 @@ export class BuscarCartaPage implements OnInit {
   }
 
   ngOnInit() {
+    const usu = localStorage.getItem('usuarioActual')?.toString();
 
   }
 

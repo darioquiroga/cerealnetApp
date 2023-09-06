@@ -13,6 +13,7 @@ export class Usuario {
     modoNotificacion: number;
 
     constructor (usuario: any, puertos = false) {
+
         if (!puertos) {
             this.idUsuario = usuario.idUsuario;
             this.nombre = usuario.nombre;

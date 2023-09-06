@@ -6,6 +6,7 @@ export class EstadoCarta {
         idEstadoCarta: number;
         descripcion: string;
     }) {
+
         this.idEstadoCarta = estadoCarta.idEstadoCarta;
         this.descripcion = estadoCarta.descripcion;
     }

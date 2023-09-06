@@ -64,6 +64,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/detalle-carta-porte/detalle-carta-porte.module').then( m => m.DetalleCartaPortePageModule)
   },
 
+  {
+    path: 'carta-porte-encontradas',
+    loadChildren: () => import('./pages/carta-porte-encontradas/carta-porte-encontradas.module').then( m => m.CartaPorteEncontradasPageModule)
+  },
 
 
 

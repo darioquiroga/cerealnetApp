@@ -8,6 +8,6 @@ export class Partido {
     constructor(partido : any) {
       this.ncPartido = partido.ncPartido;
       this.descripcion = partido.descripcion;
-      this.provincia = new Provincia(partido.provincia);
+      //this.provincia = new Provincia(partido.provincia);
       }
 }

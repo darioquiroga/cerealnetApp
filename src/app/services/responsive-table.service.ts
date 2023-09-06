@@ -165,8 +165,10 @@ checkIfSpinnerTopIsOn(completeTableData: string | any[], parcialTableData: any[]
 }
 
  // Obtiene la class del color de la carta
-getColorEstado(cartaPorte: CartaPortePosicion) {
+getColorEstado(cartaPorte: any) {
+
     const isPuertos = this.puertosService.getIfPuertos();
+
     // Si NO TIENE estadoCarta, quiere decir que es de Descarga (Estado Descargado) (estado-default)
     // Ejemplo: Si llega estadoCarta.descripcion = 'Pendiente_Desvio' retorna 'estado-pendiente-desvio'
     return isPuertos ? (
@@ -180,7 +182,7 @@ getColorEstado(cartaPorte: CartaPortePosicion) {
             'Rec Oficial'
         ].includes(cartaPorte.estadoPosiReal) ?
             `estado-default` :
-            `estado-${cartaPorte.estadoCarta.descripcion.toLowerCase().replace(' ', '-')}`
+            `estado-${cartaPorte.estado.descripcion.toLowerCase().replace(' ', '-')}`
     ) : (
         (!cartaPorte || !cartaPorte.estadoCarta || !cartaPorte.estadoCarta.idEstadoCarta) || [
             estadosCartaPosicion.Descargado,

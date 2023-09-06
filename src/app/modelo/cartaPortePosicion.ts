@@ -42,7 +42,8 @@ export class CartaPortePosicion {
 
     analisis!: any[];
 
-    constructor (cartaPorte: any, puertos = false) {
+    constructor (cartaPorte: any,  puertos = false) {
+
         // debugger;
         if (!puertos) {
             this.nroCarta = cartaPorte.nroCarta;
@@ -68,18 +69,20 @@ export class CartaPortePosicion {
             this.calidad = new Calidad(cartaPorte.calidad);
             this.plantaDestino = new Planta(cartaPorte.plantaDestino);
         } else {
+
             this.nroCarta = cartaPorte.PorteNro;
             this.nroVagon = cartaPorte.porteVagon;
             this.fechaDescarga = cartaPorte.porteFechaDes;
             this.patente = cartaPorte.portePatenteCamion;
-            // this.nroContrato = cartaPorte.nroContrato;
+            this.nroContrato = cartaPorte.nroContrato;
             this.kgNeto = cartaPorte.porteKgsNeto;
             this.observacion = cartaPorte.obsAnalisis;
             this.estadoCarta = new EstadoCarta({
-                // idEstadoCarta: this.getIdEstadoEstregaByIdEstadoPuerto(cartaPorte.estado.estado),
-                idEstadoCarta: cartaPorte.estado.estado,
-                descripcion: cartaPorte.estadoPosiReal
+                 //idEstadoCarta: this.getIdEstadoEstregaByIdEstadoPuerto(cartaPorte.estado.estado),
+                 idEstadoCarta: cartaPorte.estado,
+                 descripcion: cartaPorte.estadoPosiReal
             });
+
 
             if (cartaPorte.puertoDestino) {
                 this.destino = new Destino({
@@ -182,17 +185,16 @@ export class CartaPortePosicion {
             this.plantaDestino = new Planta({
                 idPlanta: cartaPorte.puertoDestino.ptoCuit,
                 descripcion: cartaPorte.puertoDestino.ptoRazon,
-                direccion: new cartaPorte() ,
+                direccion: "",
                 localidad: new cartaPorte()
             });
 
             this.plantaProcedencia = new Planta({
                 idPlanta: cartaPorte.procedencia.cod,
                 descripcion: cartaPorte.procedencia.denominacion,
-                direccion: new cartaPorte(),
-                localidad: new cartaPorte()
-            });
-
+                direccion: "",
+                localidad:  new cartaPorte(),
+              });
             this.estadoPosiReal = cartaPorte.estadoPosiReal;
             this.porteEstado = cartaPorte.porteEstado;
 

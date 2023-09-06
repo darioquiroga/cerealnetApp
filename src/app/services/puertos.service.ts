@@ -26,13 +26,13 @@ export class PuertosService {
 
 }
 
-checkIfAccionable = (carta: CartaPortePosicion) => {
+checkIfAccionable = (carta: any) => {
     return (
         this.getIfPuertos() &&
         (!carta.entreCp || carta.entreCp.length === 0) &&
         (
-            (carta.porteEstado === 5 && carta.estadoCarta.idEstadoCarta === 0) ||
-            (carta.porteEstado === 3 && carta.estadoCarta.idEstadoCarta === 1)
+            (carta.porteEstado === 5 && carta.estado.estado === 0) ||
+            (carta.porteEstado === 3 && carta.estado.estado === 1)
         ) &&
         (carta.porteTipo !== 3)
     )

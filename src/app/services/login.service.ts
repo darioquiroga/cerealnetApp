@@ -9,6 +9,7 @@ import { Login } from 'src/app/modelo/login';
 import { StorageService } from './storageService';
 import { IonRefresher } from '@ionic/angular';
 import { Observable, timeout } from 'rxjs';
+import { NotificacionesService } from './notificaciones.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +17,7 @@ import { Observable, timeout } from 'rxjs';
 export class LoginService {
   public usuarioActual: Usuario | any;
   public usuarioToken: string | undefined;
+  public esPuertosSn: boolean | false = false;
   public usuarioGrabado: Usuario | any;
   public logueado: boolean = false;
   public static instancia: LoginService;
@@ -29,7 +31,8 @@ export class LoginService {
   public msgLoginRepuesta: string | any;
   public timeOut: any;
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private notificacionService: NotificacionesService
   ) //private storageService: StorageService,
   {}
 
@@ -37,20 +40,19 @@ export class LoginService {
   async loginUser(login: Login, remember?: boolean) {
     // Checkeo si es cerealnet o puertos
     const isPuertos = login.usuario[0] === '*';
+
     // Mando el pushId al login y mando un evento para activar el modo de notificacion del usaurio
-    const pushId: string = 'noPushId'; //await this.notificacionService.getPushId();
+    const pushId: string = await this.notificacionService.getPushId();
     // Me logueo y obtengo los datos de logueo
     //const dataLogin = await this.authService.login(usuario, clave, pushId, isPuertos);
 
     return new Promise(async (resolve, reject) => {
       try {
-        const cleanUser = isPuertos
-          ? login.usuario.substring(1)
-          : login.usuario;
-        const hash = login.clave; //CryptoJS.MD5(login.clave);
-        const url = this.getURLServicio(login.usuario);
 
-        const params = { pushId: 'noPushId' };
+        const cleanUser =  isPuertos ? login.usuario.substring(1) : login.usuario
+        const hash = login.clave; //CryptoJS.MD5(login.clave);
+        const url = this.getURLServicio(cleanUser, isPuertos);
+        const params = { pushId: pushId};
         const httpOptions = {
           headers: new HttpHeaders({
             clave: hash.toString(),
@@ -62,15 +64,18 @@ export class LoginService {
             // data is already a JSON object
 
             if (data.token != '') {
-              this.usuarioActual = data.usuario;
-              this.usuarioActual = new Usuario(this.usuarioActual);
-              this.usuarioToken = isPuertos ? data.acceso.token : data.token;
 
+              this.usuarioActual = data.usuario;
+              this.usuarioActual = new Usuario(this.usuarioActual, isPuertos);
+              this.usuarioToken = isPuertos ? data.acceso.token : data.token;
+              this.esPuertosSn = isPuertos;
               this.saveStorage('usuario', this.usuarioActual);
               this.saveStorage('token', this.usuarioToken);
+              this.saveStorage('esPuertosSn', this.esPuertosSn);
               this.logueado = true;
 
-              resolve(true);
+
+              resolve(this.logueado);
             } else {
               resolve(false);
               //reject(this.usuarioActual.control?.descripcion ?? 'Error al autenticar.');
@@ -202,10 +207,16 @@ export class LoginService {
   /**
    * Esta funcion devuelve la URL del servicio
    */
-  private getURLServicio(usuario: string) {
+  private getURLServicio(usuario: string, puertos: boolean) {
     // Por ahora devuelvo el string como esta, despues hay que usar el token
-    return Configuraciones.authUrl + usuario;
+    if(puertos === true){
+      return Configuraciones.authPuertosUrl + usuario;
+    }else{
+      return Configuraciones.authUrl + usuario;
+    }
+
   }
+
 
   /**
    * Esta funcion devuelve la URL del servicio

@@ -1,14 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>detalle-carta-porte</ion-title>
+    <ion-title>Carta de porte  {{cartaDePorte.nroCarta}}</ion-title>
+    <ion-buttons slot="end">
+      <ion-back-button defaultHref="/buscar-carta"></ion-back-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" padding class="body">
   <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">detalle-carta-porte</ion-title>
-    </ion-toolbar>
+
   </ion-header>
 
 
@@ -72,7 +73,8 @@
                                 Fecha Carga
                             </div>
                             <div class="col-xs-6 col-md-2 with-style">
-                                {{utilsService.formatDate(cartaDePorte.fechaCarga)}}
+                              {{cartaDePorte.fechaCarga}}
+                                <!--{{utilsService.formatDate(cartaDePorte.fechaCarga)}}-->
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-3 with-style without-padding">
@@ -80,7 +82,8 @@
                                 Fecha Vencimiento
                             </div>
                             <div class="col-xs-6 col-md-2 with-style">
-                                {{utilsService.formatDate(cartaDePorte.fechaVencimiento)}}
+                              {{cartaDePorte.fechaVencimiento}}
+                              <!--   {{uiService.formatDate(cartaDePorte.fechaVencimiento)}}-->
                             </div>
                         </div>
                     </div>
@@ -373,7 +376,8 @@
                             Fecha Arribo:
                         </div>
                         <div class="col-xs-6 col-md-5 with-style">
-                            {{utilsService.formatDate(cartaDePorte.fechaArribo)}}
+                          {{cartaDePorte.fechaArribo}}
+                            <!--{{utilsService.formatDate(cartaDePorte.fechaArribo)}}-->
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-12 with-style without-padding">
@@ -381,7 +385,8 @@
                             Fecha Descarga:
                         </div>
                         <div class="col-xs-6 col-md-5 with-style">
-                            {{utilsService.formatDate(cartaDePorte.fechaDescarga)}}
+                          {{cartaDePorte.fechaDescarga}}
+                            <!--{{utilsService.formatDate(cartaDePorte.fechaDescarga)}}-->
                         </div>
                     </div>
                     <!-- <div class="col-xs-12 col-md-12 with-style without-padding">

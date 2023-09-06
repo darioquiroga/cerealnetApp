@@ -22,6 +22,7 @@ import { Preferences } from '@capacitor/preferences';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TipoAccion } from '../modelo/tipoAccion';
 import { IonFab, IonFabButton, IonFabList, IonIcon } from '@ionic/angular';
+
 /**
 * Esta clase se creo para invocar el recurso del servicio web que devuelve el
 * resumen de la cuenta
@@ -35,6 +36,7 @@ export class PosicionDiaService {
   // DECLARACION DE LAS PROPIEDADES QUE NECESITO //
   //---------------------------------------------//
   public static URLSERVICIO: string = Configuraciones.urlBase;
+  public static URLSERVICIOPUERTOS: string = Configuraciones.urlBasePuertos;
 
   public flag: boolean = false;
   //private loginService: LoginService | any;
@@ -45,7 +47,7 @@ export class PosicionDiaService {
   // Metodo constructor
   constructor(public http: HttpClient,
     private responsiveTableService: ResponsiveTableService,
-    private puertosService: PuertosService) { }
+    private puertosService: PuertosService, private uiService: UiService) { }
   public configuraciones = Configuraciones;
   // Hago la consulta
   async getPosicionDia() {
@@ -56,8 +58,7 @@ export class PosicionDiaService {
         const isPuertos = this.puertosService.getIfPuertos()
        const token: any = currentToken;
        let parameters:URLSearchParams = new URLSearchParams();
-        parameters.set("puertos", "false");
-        const url = `${this.getURLServicio()}?`+parameters;
+        const url = `${this.getURLServicio(isPuertos)}?`+parameters;
         const httpOptions = {
           headers: new HttpHeaders({
               token: token.replace(/['"]+/g, ''),
@@ -68,11 +69,10 @@ export class PosicionDiaService {
         this.http.get(url,  httpOptions).subscribe({
           next: (data: any) => {
              resolve (
-                {
-                  data
-                }
-              );
-
+              {
+                data
+              }
+            );
 
           },
 
@@ -90,6 +90,11 @@ export class PosicionDiaService {
 
 
 };
+
+
+
+
+
   // Este metodo invoca el servicio y parsea la respuesta
   public async load() {
     /*const usuarioActualStr = localStorage.getItem('usuarioActual');
@@ -135,17 +140,35 @@ export class PosicionDiaService {
 
   }
 
+
+
+
+
+
+
+
+
+
 // Checkea si el camion es desviable o autorizable (estado Demorado o Rechazado)
     // También checkea que eluser logueado sea autorizador
     checkIfAccionable(
-      cartaPorte: CartaPortePosicion,
+      cartaPorte: any,
       usuarioActivo: { perfil: { id: number; }; }
   ) {
+      if (this.puertosService.getIfPuertos() === true){
       return (
-          (cartaPorte.estadoCarta.idEstadoCarta === estadosCartaPosicion.Demorado ||
-          cartaPorte.estadoCarta.idEstadoCarta === estadosCartaPosicion.Rechazo)  &&
+          (cartaPorte.estado.estado === estadosCartaPosicion.Demorado ||
+          cartaPorte.estado.estado === estadosCartaPosicion.Rechazo)  &&
           (usuarioActivo.perfil.id === perfilesUsuarios.USUARIO_AUTORIZACION)
       ) ? true : false;
+    }else{
+      return (
+        (cartaPorte.estadoCarta.idEstadoCarta === estadosCartaPosicion.Demorado ||
+        cartaPorte.estadoCarta.idEstadoCarta === estadosCartaPosicion.Rechazo)  &&
+        (usuarioActivo.perfil.id === perfilesUsuarios.USUARIO_AUTORIZACION)
+    ) ? true : false;
+    }
+
   }
 
   // Reduce el parcial table. Por ahroa se quita elementos del final de la lista nomas
@@ -353,45 +376,81 @@ checkIfAutorizable(
 
 // Solicita una accion, y hace lo correspondiente
 async solicitarAccion(
-  cartaPorte: CartaPortePosicion,
-  tipoAccion: string
- // event: any
+  cartaPorte: any,
+  tipoAccion: number
+   // event: any
 ) {
 
-  // Checkeo si solicita un llamado o una accion
-  /*if (tiposAcciones[tipoAccion] == tiposAcciones.SOLICITUD_LLAMADO) {
+  // Checkeo si solicita un llamado o una accion //
+  if (tipoAccion === tiposAcciones.SOLICITUD_LLAMADO ) {
 
-      this.utilsService.showAlert(
-          textos.posicionDia.solicitarLlamado.titulo,
-          textos.posicionDia.solicitarLlamado.descripcion,
-          async() => {
+     this.uiService.presentAlertConfirm(textos.posicionDia.solicitarLlamado.titulo, textos.posicionDia.solicitarLlamado.descripcion,
+      async() => {
+        try {
+            // Obtengo token del user
+
+            // Nota: El await es requerido porque sinó NO dispara el catch de abajo
+           /* await this.authService.solicitarLlamado(
+                cartaPorte.entregador.idEntregador,
+                '',
+                tipoSesion.NORMAL,
+                currentToken
+            );*/
+
+
+            return new Promise(async (resolve, reject) => {
               try {
-                  // Obtengo token del user
-                  const currentToken = await this.storageService.getToken();
+                const isPuertos = this.puertosService.getIfPuertos()
+               const currentToken:any = localStorage.getItem('token')?.toString();
+               let parameters:URLSearchParams = new URLSearchParams();
+                const url = `${this.getURLServicioSolicitarLlamado(isPuertos)}?`+parameters;
+                const httpOptions = {
+                  headers: new HttpHeaders({
+                      token: currentToken.replace(/['"]+/g, ''),
+                  }),
 
-                  // Nota: El await es requerido porque sinó NO dispara el catch de abajo
-                  await this.authService.solicitarLlamado(
-                      cartaPorte.entregador.idEntregador,
-                      '',
-                      tipoSesion.NORMAL,
-                      currentToken
-                  );
+                };
 
-              } catch(err) {
-                  //console.log(err);
-                  this.utilsService.showAlert(
-                      textos.posicionDia.solicitarLlamado.error.titulo,
-                      textos.posicionDia.solicitarLlamado.error.descripcion
-                  );
+                this.http.post(url,  httpOptions).subscribe({
+                  next: (data: any) => {
+                     resolve (
+                      {
+                        data
+                      }
+                    );
+
+                  },
+
+                  error: (error: any) => {
+                    // ourrio algun error en el login
+                    resolve(error);
+                  },
+                });
+              } catch (error: any) {
+                alert('Error: Ocurrio un error general, intente nuevamente más tarde.');
+                const dataError = JSON.parse(error.error);
+                reject(dataError.control.descripcion);
               }
-          },
-          true
-      )
+            });
+
+        } catch(err) {
+            this.uiService.presentAlertInfo(textos.posicionDia.solicitarLlamado.error.titulo+": "+
+              textos.posicionDia.solicitarLlamado.error.descripcion)
+
+        }
+    },
+    true
+  )
+
+
+
+
+
   }else {
       // Solicitó acción. Checkeo si son clientes o si es puertos
       const isPuertos = this.puertosService.getIfPuertos();
       //
-      if (isPuertos) {
+      /*if (isPuertos) {
           // Si el usuario es de puertos
           // this.navCtrl.push(AccionPuertosPage, {cartasEncontradas: cartasEncontradas});
           this.app.getActiveNav().push(
@@ -437,11 +496,12 @@ async solicitarAccion(
               },
               true
           )
-      }
+      }*/
 
-  }*/
+  }
 
 }
+
 // Checkea si el camion es desviable o autorizable (estado Demorado o Rechazado)
     // También checkea que eluser logueado sea autorizador
    /* checkIfAccionable(
@@ -499,10 +559,23 @@ getEstadoByTipoAccion(tipoAccion: number) {
   /**
   * Esta funcion devuelve la URL del servicio
   */
-  private getURLServicio() {
+  private getURLServicio(puertos: boolean) {
     // Por ahora devuelvo el string como esta, despues hay que usar el token
-    return PosicionDiaService.URLSERVICIO + `/cartaPorte/posicion`;
+    if(puertos === true){
+      return PosicionDiaService.URLSERVICIOPUERTOS+`/cartaPorte/posicion`;
+    }else{
+      return PosicionDiaService.URLSERVICIO + `/cartaPorte/posicion`;
+    }
   }
+  private getURLServicioSolicitarLlamado(puertos: boolean) {
+    // Por ahora devuelvo el string como esta, despues hay que usar el token
+    if(puertos === true){
+      return PosicionDiaService.URLSERVICIOPUERTOS+`/notificaciones/solicitud-llamado`;
+    }else{
+      return false;
+    }
+}
+
 
 }
 function fill(completeTableData: CartaPortePosicion[], arg1: (cartaPorte: CartaPortePosicion) => boolean) {

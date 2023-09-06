@@ -604,18 +604,19 @@ margin: -8px;
     }
   }
 
-  .empty-table {
-    display: flex;
 
-    .message-empty {
-      padding: 7px;
-      margin: 0 auto;
-    }
-  }
 
 }
 
+.empty-table {
+  display: flex;
 
+  .message-empty {
+    padding: 7px;
+    margin: 0 auto;
+    font-size: 12px;
+  }
+}
 .filtro-fechas-container {
   margin: 3% 1%;
   text-align: center;

@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
   togglePasswordMode() {
     this.passwordTypeInput  =  this.passwordTypeInput  ===  'text'  ?  'password'  :  'text';
     this.iconpassword  =  this.iconpassword  ===  'eye-off'  ?  'eye'  :  'eye-off';
-    this.passwordEye.el.setFocus();
+    this.passwordEye.setFocus();
 }
   get isValidForm() { return true; }
 
@@ -121,7 +121,7 @@ export class LoginPage implements OnInit {
     }
     ).catch(
       async error => {
-        this.uiService.presentAlertInfo(error);
+        this.uiService.presentAlertInfo(error+" Ocurrio un error inesperado, inténte nuevamente más tarde.");
         await this.loadingController.dismiss();
       }
     );

@@ -38,6 +38,7 @@ export class BuscarCartaPorteService {
  async  getCartaPorte  ( paramBusqueda: string, filtroFechas: { desde: Date, hasta: Date }) {
 let fechaDesde = this.uiService.formatDate(filtroFechas.desde)
 let fechaHasta = this.uiService.formatDate(filtroFechas.hasta)
+
 //////////////////////////////////////////////
   const isPuertos = this.puertosService.getIfPuertos();
   const currentToken = localStorage.getItem("token");
@@ -49,7 +50,7 @@ let fechaHasta = this.uiService.formatDate(filtroFechas.hasta)
       parameters.set("fechaDesde", fechaDesde.toString());
       parameters.set("fechaHasta", fechaHasta.toString());
 
-    const url = `${this.getURLServicio()}?`+parameters+"&"+paramBusqueda;
+    const url = `${this.getURLServicio()}?`+parameters+"&paramBusqueda="+paramBusqueda;
 
       const httpOptions = {
         headers: new HttpHeaders({
@@ -88,6 +89,7 @@ let fechaHasta = this.uiService.formatDate(filtroFechas.hasta)
  }
 
  private getURLServicio() {
+  //https://ws.cerealnet.com/cerealnetServiciosWebV2/ws/cartaPorte/descarga/posicion?paramBusqueda=11529644
   return BuscarCartaPorteService.URLSERVICIO + `/cartaPorte/descarga`;
 
 }

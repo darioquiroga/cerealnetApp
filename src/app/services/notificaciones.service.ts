@@ -3,7 +3,7 @@ import { Configuraciones } from 'src/app/shared/constants/configuraciones';
 import { Notificacion } from "../modelo/notificacion";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
-
+import { Platform } from "@ionic/angular";
 @Injectable({
     providedIn: 'root'
 })
@@ -19,11 +19,14 @@ export class NotificacionesService {
   public cuenta : any;
   public datos : any;
     usuarioActual: any;
+  oneSignal: any;
 
     //---------------------------------------------//
 
     // Metodo constructor
-    constructor(public http: HttpClient) { }
+    constructor(public http: HttpClient,
+    // private oneSignal: OneSignal,
+        private platform: Platform) { }
 
     public async load() {
 
@@ -77,9 +80,9 @@ export class NotificacionesService {
                    if (control.codigo == "OK") {
                     this.flag = true;
                     this.numeroMensajes = Number(control.descripcionLarga);
-                   
-                  
-                   
+
+
+
                     resolve( this.numeroMensajes);
                    } else {
                     this.ver = false;
@@ -90,7 +93,7 @@ export class NotificacionesService {
               console.log("fallaron en buscar los no vistos");
                const dataError = JSON.parse(error.error)
                reject(dataError.control.descripcion);
-            
+
                this.numeroMensajes = 0;
                resolve( this.numeroMensajes)
            }
@@ -99,6 +102,25 @@ export class NotificacionesService {
 
 
   }
+  // Retorna el id del usuario para mandar las notificaciones push
+    // Esta es necesaria para mandar notificaciones individuales
+    async getPushId() {
+      if (this.platform.is('cordova')) {
+          // Me conecto a one signal
+          this.connectOneSignal();
+          // Retorno el id del dispositvio de oneSignal
+          return (await this.oneSignal.getIds()).userId;
+      } else {
+          return 'connectedByBrowser';
+      }
+  }
+  connectOneSignal() {
+    this.oneSignal.startInit(Configuraciones.oneSignalCredenciales.appId, Configuraciones.oneSignalCredenciales.googleProjectnumber);
+    this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.InAppAlert);
+    this.oneSignal.handleNotificationReceived().subscribe(() => {});
+    this.oneSignal.handleNotificationOpened().subscribe(() => {});
+    this.oneSignal.endInit();
+}
     public ponerEnFalso() {
      // alert("ponerEnFalso")
       this.ver = false;
@@ -119,9 +141,9 @@ export class NotificacionesService {
                         idMensaje: idMensaje
                     }),
                 };
-                const bodyOptions = {  
-                  token: this.usuarioActual.token.hashId,  
-                  idMensaje: idMensaje 
+                const bodyOptions = {
+                  token: this.usuarioActual.token.hashId,
+                  idMensaje: idMensaje
                 }
 
                 this.http.post(url,bodyOptions, httpOptions).subscribe((data: any) => {
@@ -145,7 +167,7 @@ export class NotificacionesService {
         if (usuarioActualStr) {
             this.usuarioActual = JSON.parse(usuarioActualStr);
         }
-        
+
         return new Promise(async (resolve, reject) => {
             try {
                 const url = `${this.getURLServicio()}/visto`;
@@ -155,9 +177,9 @@ export class NotificacionesService {
                     idMensaje: idMensaje
                 })
                 };
-                const bodyOptions = {  
-                  token: this.usuarioActual.token.hashId,  
-                  idMensaje: idMensaje 
+                const bodyOptions = {
+                  token: this.usuarioActual.token.hashId,
+                  idMensaje: idMensaje
                 }
                 this.http.post(url, bodyOptions, httpOptions).subscribe((data: any) => {
                     let control = data.control;

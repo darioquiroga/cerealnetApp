@@ -7,6 +7,7 @@ import { tipoSesion } from './shared/constants/tipoSesion';
 import { StorageService } from './services/storageService';
 import { modosNotificacion } from './shared/constants/modosNotificacion';
 import { Observable, Subject } from 'rxjs';
+import { VariableBinding } from '@angular/compiler';
 
 
 @Component({
@@ -17,30 +18,27 @@ import { Observable, Subject } from 'rxjs';
 export class AppComponent {
   public usuarioActivo: { tipo: string; nombre: string; } | undefined;
 
+
+
   constructor(private platform: Platform, private router: Router) {
     this.initializeApp();
   }
 
   // Mantengo actualizado este json acá en el javascript
   public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
-
+  public notificacionesMostrar = false;
   public appPages = [
-    { title: 'Posición de día', url: '/resumen', icon: 'boat' },
+    { title: 'Posición de día', url: '/resumen', icon: 'calendar' },
     { title: 'Descarga', url: '/descarga', icon: 'download' },
-    { title: 'Buscar Carta', url: '/buscar-carta', icon: 'search' },
+    //{ title: 'Buscar Carta', url: '/buscar-carta', icon: 'search' },
 
   ];
   public temp = '';
-
   public labels = ['etiquetas 1', 'etiqueta 2'];
-
   initializeApp() {
 
-    /*  this.usuarioActivo =  { tipo: '', nombre: '' };*/
     this.platform.ready().then(() => {
-      debugger
       this.refreshUsuarioActivo();
-
     });
 
   }
@@ -62,7 +60,15 @@ export class AppComponent {
 
     if (typeof this.usuarioActivoJson === 'string') {
       const usuario = JSON.parse(this.usuarioActivoJson);
+
+      if (usuario.tipo.id == 1){
+        this.notificacionesMostrar = false;
+      }else{
+        this.notificacionesMostrar = true;
+      }
+
       this.getTipoSesion().then((tipo) => {
+
         // Si tipo es nromal, entonces el usaurio logueadoe es normal
         if (
           tipo === tipoSesion.NORMAL ||

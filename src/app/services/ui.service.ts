@@ -23,7 +23,39 @@ export class UiService {
     document.body.appendChild(alert);
     await alert.present();
   }
+  async presentAlertConfirm(header: string , message: string, onClickOk?: any, tipoSiNo?: any, withSpinner?: any) {
+    const alert = document.createElement('ion-alert');
+    alert.header = header;
+    alert.message = message;
+    alert.buttons =  [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+        cssClass: 'secondary',
+        handler: (blah) => {
+          console.log('---> Confirm Cancel: blah');
+        }
+      }, {
+        text: 'Aceptar',
+        handler: data => {
+          if (onClickOk) {
+              onClickOk();
+          }
+      }
+      }
+    ]
 
+    document.body.appendChild(alert);
+    await alert.present();
+  }
+
+// Insertar un string en el indice que quieras de cualuqier string
+insertString(index: number, stringBase: string, stringInsertar: string) {
+  if (index > 0)
+      return stringBase.substring(0, index) + stringInsertar + stringBase.substring(index, stringBase.length);
+  else
+      return stringInsertar + stringBase;
+};
   async presentLoading(msg: string) {
     const loading = await this._loadingController.create({
       cssClass: 'my-custom-class',
@@ -48,6 +80,8 @@ export class UiService {
       return `${fechaDate.getDate() < 10 ? '0' : ''}${fechaDate.getDate()}/${
         mes < 10 ? '0' : ''
       }${mes}/${fechaDate.getFullYear()}`;
+
+
     }
     return fecha;
   }

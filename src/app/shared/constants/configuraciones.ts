@@ -4,16 +4,14 @@ export class Configuraciones {
     // PRODUCCIÓN
 
     public static urlBase: string = "https://ws.cerealnet.com/cerealnetServiciosWebV2/ws";
-
     public static urlBasePuertos: string = "https://ws.cerealnet.com/cerealnetPuertosRest-1.0-SNAPSHOT/ws";
+
     public static miCuentaUrl: string = "https://ws.cerealnet.com/cerealnetServiciosWebV2/ws/mi-cuenta";
     public static dummyUrl: string ="https://ws.cerealnet.com/cerealnetServiciosWebV2/ws";
     public static notificacionesUrl: string = "https://ws.cerealnet.com/cerealnetServiciosWebV2/ws/notifiaciones";
-    // REMOTO
-    // public static urlBase: string = "http://192.0.0.192:8080/cerealnetServiciosWeb/ws";
-    // public static urlBasePuertos: string = "http://192.0.0.192:8080/cerealnetPuertosRest-1.0-SNAPSHOT/ws";
 
     public static authUrl: string = `${Configuraciones.urlBase}/usuario/login/`;
+    public static authPuertosUrl: string = `${Configuraciones.urlBasePuertos}/usuario/login/`;
     public static timeoutDefault: number = 120000;  //120 seg
     public static servicioRss2JsonURL: string = "https://api.rss2json.com/v1/api.json?rss_url=";
 

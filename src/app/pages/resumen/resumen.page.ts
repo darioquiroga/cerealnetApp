@@ -1,7 +1,8 @@
 import { AppComponent } from './../../app.component';
 import { MiCuentaPage } from './../mi-cuenta/mi-cuenta.page';
+
 import { Component,   NgZone, OnInit, ViewChild, inject } from '@angular/core';
-import {  IonContent  } from '@ionic/angular';
+import {  IonContent, IonFab  } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 // Constantes y otros
 import { estadosCartaPosicion } from '../../shared/constants/estadosCartaPorte';
@@ -38,6 +39,8 @@ import {
 
 import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { Configuraciones }  from '../../shared/constants/configuraciones';
+import * as _ from 'lodash';
+import { async } from 'rxjs';
 
 
 //import { posicionDiaAnimations } from './posicionDiaAnimations';
@@ -72,11 +75,13 @@ export class ResumenPage implements OnInit {
   txtNadaEnBusqueda : String | null = "";
   private activatedRoute = inject(ActivatedRoute);
   istodoCargado : any
-
+  public esPuertosSn: any;
   public notificaciones: any;
   public ver: boolean = false;
   public numeroMensajes: any;
   public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
+
+
    // Estado de la busqueda, si esta activa o no
    busquedaActiva: boolean | undefined;
    // Texto buscado (esta bindeado con el input)
@@ -85,21 +90,26 @@ export class ResumenPage implements OnInit {
    estadosToggleCarta: boolean[] | any;
    // Tabla de cartas mutada (filtrada, achicada, etc)
    //parcialTableData: CartaPortePosicion[] = [];
-   parcialTableData: CartaPortePosicion[] = [] ;
+   parcialTableData: any[] = [] ;
    // Tabla de cartas inicial completa
-   completeTableData :  CartaPortePosicion[] = [];
+   completeTableData :  any;//CartaPortePosicion[] = [];
+   posicionCompletaDelDia : any;
    // Cantidad de camiones en posición
    tituloCantidad: string | undefined;
    // Filtros activos (badges que aparecen arriba del seachBar)
-   activeFilters!: { estado: any; destino: any; };
+   activeFilters: { estado: string; destino: string; } | any;
+   filtroEstado: String  | undefined;
+   filtroDestino: String | undefined;
    // Lista con todo los estados de las cartas
    estadosList: string[] = [];
    // Lista con todos los destinos de las cartas
    destinosList: string[] = [];
    // Guardo el usuario activo en una variable
    usuarioActivo: Usuario | any;
+
    // Necesario para asegurarse que el user no se desplaza hacia abajo (infiniteScrollTop)
    lastScrollTop: any;
+
 
 
   constructor(
@@ -137,7 +147,8 @@ export class ResumenPage implements OnInit {
     this.txtNadaEnBusqueda = textos.posicionDia.html.nadaEnBusqueda;
     this.istodoCargado = false
     this.seccion = this.activatedRoute.snapshot.paramMap.get('id') as string;
-
+    this.filtroEstado = "";
+    this.filtroDestino = "";
     this.notificacionesService.ponerEnFalso();
     this.notificacionesService.checkPorVer().then(async (resp) => {
       this.data = resp;
@@ -172,30 +183,37 @@ async initTable() {
   //this.uiService.dissmiss();
 
 
+
 }
  // Primero guardo filtros activos, después filtro y por último cierro los FAB's
 
-      onClickFilter(filter: string, typeFilter: string, fabCollection: any) {
+    onClickFilter(filter: string, typeFilter: string, fabCollection: any) {
+
         // Cierro los FAB's
         this.posicionDiaService.closeFabs(fabCollection);
         // Guardo los nuevos filtros
         this.activeFilters = this.posicionDiaService.getNewActiveFilters(filter, typeFilter,this.activeFilters);  ;
         // Filtro
         this.parcialTableData = this.posicionDiaService.filter(this.activeFilters, this.completeTableData);
+        this.filtroDestino  = this.activeFilters.destino;
+        this.filtroEstado = this.activeFilters.estado;
 
-        // Cierro todos los toggles de las cartas de porte
-        this.estadosToggleCarta = this.responsiveTableService.closeToggles(this.estadosToggleCarta);
+
         // Cambio el titulo por uno mas acorde
         if (this.activeFilters.destino && this.activeFilters.estado) {
+
             this.tituloCantidad = `Total: ${this.parcialTableData.length}`;
         } else {
             if (typeFilter === 'todos') {
                 // Guardo todos en cantidad
+                this.filtroDestino  ="";
+                this.filtroEstado = "";
                 this.tituloCantidad = `Cantidad en Posicion: ${this.completeTableData.length}`;
             } else {
                 this.tituloCantidad = `${this.posicionDiaService.getTituloFiltrado(filter, typeFilter)}${this.parcialTableData.length}`;
             }
         }
+
     }
 
 
@@ -203,14 +221,18 @@ async initTable() {
     getNewActiveFilters(filter: string, typeFilter: string, oldActiveFilters: {estado: string, destino: string}) {
       // Primeramente checkeo si está limpiando los filtros, en ese caso retorno un activeFilters vacio
       if (typeFilter === 'todos') {
+        this.filtroDestino  ="";
+        this.filtroEstado = "";
           return {estado: null, destino: null};
       }
 
       // hago una copia para evitar mutación
       let activeFilters: {estado: string, destino: string} = oldActiveFilters;
+      this.filtroDestino  =activeFilters.estado;
+      this.filtroEstado = activeFilters.destino;
       // Asigno el nuevo filtro. Ejemplo activeFilters['estado'] = 'Demorado';
-      //activeFilters[typeFilter] = filter;
-
+      activeFilters["estado"] = activeFilters.estado;
+      activeFilters["destino"] = activeFilters.destino;
       return activeFilters;
   }
 async doRefresh(refresher:any) {
@@ -274,7 +296,7 @@ async searchByText(ev: any,  exclude?: any) {
 
 
   // Saco los filtros
-  this.activeFilters = {estado: null, destino: null};
+  this.activeFilters = {estado: "", destino: ""};
   // Activo spinner mientras busca
   this.loading = false;
   // Busco
@@ -320,6 +342,7 @@ doInfiniteScrollTop($event: { scrollTop: any; }) {
       $event,
       this.lastScrollTop,
       this.completeTableData,
+
       this.parcialTableData,
       this.busquedaActiva,
       this.estadosToggleCarta,
@@ -351,19 +374,27 @@ async refreshTable() {
               estadosCartaPosicionPuertos : estadosCartaPosicion
       );
       // Declaro filtros vacios
-      this.activeFilters = {estado : null, destino: null};
+      this.activeFilters = {estado : "", destino: ""};
       // Busco y guardo el usuario activo
       if (typeof this.usuarioActivoJson === 'string') {
         this.usuarioActivo =  JSON.parse(this.usuarioActivoJson);
+
       }
       // Obtengo posición del día
 
+
       this.posicionDiaService.getPosicionDia().then(
         async resp => {
+
+          const respuesta = JSON.stringify(resp);
+
+          this.esPuertosSn = this.puertosService.getIfPuertos();
           const data = JSON.stringify(resp);
-          this.completeTableData = JSON.parse(data).data;
+          this.completeTableData = JSON.parse(data).data ;
+          debugger
           // Guardo la cantidad en posicion (Posicion del dia)
-          this.tituloCantidad = `Cantidad en Posicion: ${this.completeTableData.length}`;
+          this.tituloCantidad = `Cantidad en Posicion: `;
+
          // Guardo una parte parcial de la tabla completa (lazy load)
          await this.loadingController.dismiss();
          this.parcialTableData = this.responsiveTableService.getInitParcialTable(this.completeTableData);
@@ -376,13 +407,13 @@ async refreshTable() {
            // Texto buscado vacio
           this.inputSearchBar = '';
 
-        });
+        }) ;
 
 
 
 
 
-
+      // fin posicion dia
 
   }
   catch(err) {
@@ -396,4 +427,8 @@ async refreshTable() {
 }
 
 
+
+
 }
+
+
