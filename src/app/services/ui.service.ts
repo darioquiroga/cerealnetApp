@@ -23,6 +23,7 @@ export class UiService {
     document.body.appendChild(alert);
     await alert.present();
   }
+
   async presentAlertConfirm(header: string , message: string, onClickOk?: any, tipoSiNo?: any, withSpinner?: any) {
     const alert = document.createElement('ion-alert');
     alert.header = header;
@@ -48,6 +49,8 @@ export class UiService {
     document.body.appendChild(alert);
     await alert.present();
   }
+
+
 
 // Insertar un string en el indice que quieras de cualuqier string
 insertString(index: number, stringBase: string, stringInsertar: string) {

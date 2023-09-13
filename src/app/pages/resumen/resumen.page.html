@@ -3,12 +3,12 @@
     <ion-buttons slort="start">
       <ion-menu-button menu="menuPrincipal"></ion-menu-button>
       <ion-title>{{tituloCantidad}}</ion-title>
-      <app-header-component
+      <!--<app-header-component
         *ngIf="notificaciones"
         [headerText]="''"
         [numeroMensajes]="ver ? numeroMensajes : numeroMensajes"
       >
-      </app-header-component>
+      </app-header-component>-->
 
       <!-- <app-user-component></app-user-component> -->
     </ion-buttons>
@@ -42,7 +42,9 @@
 
     <div class="table-container" *ngIf="this.parcialTableData.length > 0">
       <div class="head-table wrapper">
-        <div class="element-head-table element-wrapper">Estado</div>
+        <div class="element-head-table element-wrapper">
+          Estado
+        </div>
         <div class="element-head-table element-wrapper nroCarta-element">
           Nro Carta
         </div>
@@ -50,12 +52,14 @@
           Patente
         </div>
       </div>
-      <div
-        class="infinite-scroll-top"
-        *ngIf="(responsiveTableService.checkIfSpinnerTopIsOn(completeTableData, parcialTableData) &&
-                (!activeFilters.destino && !activeFilters.estado)  &&
-                (!busquedaActiva)) && completeTableData.length > 0"
-      ></div>
+     <div class="infinite-scroll-top"
+     *ngIf="(responsiveTableService.checkIfSpinnerTopIsOn(completeTableData, parcialTableData) &&
+     (!activeFilters.destino && !activeFilters.estado) &&
+     (!busquedaActiva)) && completeTableData.length > 0"
+      >
+      <ion-spinner class="spinner-container" *ngIf=" !this.loading" ></ion-spinner>
+    </div>
+
     <!-- aca muestro carta de porte PUERTOS -->
     <div *ngIf="this.puertosService.getIfPuertos() === true">
 
@@ -85,7 +89,7 @@
               </ion-label>
             </ion-item>
             <div class="ion-padding" slot="content">
-              <div class="extra-info">
+
                <div class="extra-info">
 
 
@@ -126,7 +130,7 @@
                       {{cartaPortePuertos.destinatario.denominacion}}
                     </div>
                   </div>
-                  <div class="element-extra">
+                  <div class="element-extra">ionic
                     <div class="title-extra">Intermediario Flete</div>
                     <div class="content-extra">
                       {{cartaPortePuertos.intermediario.denominacion}}
@@ -218,7 +222,7 @@
                       </button>
                       <button
                         *ngIf="puertosService.checkIfAccionable(cartaPortePuertos)"
-                        (click)="posicionDiaService.solicitarAccion(cartaPortePuertos, 3)"
+                        (click)="posicionDiaService.solicitarAccion(cartaPortePuertos, 2)"
                         class="btn-revision"
                         ion-button
                         outline
@@ -241,7 +245,7 @@
                     </div>
                   </div>
 
-<!--
+
                 <div *ngIf="
                   posicionDiaService.checkIfAccionable(cartaPortePuertos, usuarioActivo) ||
                   puertosService.checkIfAccionable(cartaPortePuertos)"
@@ -249,12 +253,12 @@
 
                   </div>
                 </div>
-  </div>
 
 
-              -->
-            </div>
-          </div> </div>
+
+
+
+          </div>
           </ion-accordion>
         </ion-accordion-group>
 
@@ -440,35 +444,16 @@
 
 
 
-      <!-- Si NÓ se llegó al final (la posi del últi item de parcialTable es < qeu la cantid total) -->
-      <!--  y si NÓ hay fitros activos ni busqueda activa. En tal caso, se muestra todo lo que se encontró
-        [disabled]="(
-                completeTableData &&
-                (completeTableData.indexOf(parcialTableData[parcialTableData.length-1]) < completeTableData.length-1) &&
-                (!activeFilters.destino && !activeFilters.estado) &&
-                (!busquedaActiva)
-            )"
 
-<ion-infinite-scroll *ngIf="!loading"
 
-            (ionInfinite)="doInfiniteBottom($event)">
-            <ion-infinite-scroll-content>
-
-            </ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-          -->
-
-      <!-- <div  class="spinner-container">
+   <!-- <div  class="spinner-container" *ngIf="!istodoCargado">
       <ion-spinner ></ion-spinner>
   </div>-->
 
 
-  <ion-infinite-scroll *ngIf="!loading"
 
-  (ionInfinite)="doInfiniteBottom($event)">
-  <ion-infinite-scroll-content>
-
-  </ion-infinite-scroll-content>
+<ion-infinite-scroll (ionInfinite)="doInfiniteBottom($event)">
+  <ion-infinite-scroll-content></ion-infinite-scroll-content>
 </ion-infinite-scroll>
 
 
@@ -544,55 +529,4 @@
 
 
 
-<!--
-<div class="filtros-footer" >
-<ion-fab slot="fixed" *ngIf="this.completeTableData.length > 0" vertical="bottom"  style="margin-left: 65%"  #fabDestino>
-      <ion-fab-button>
-        Destino
-      </ion-fab-button>
-    <ion-fab-list class="fab-list-destino" side="top">
-        <button
-            *ngFor="let destino of destinosList"
-            (click)="onClickFilter(destino, 'destino', [fabDestino])"
-            ion-fab>
-            {{destino}}
-        </button>
-   </ion-fab-list>
-</ion-fab>
-
-
-<ion-fab slot="fixed" *ngIf="this.completeTableData.length > 0" horizontal="center"  vertical="bottom"  #fabPrincipal>
-  <ion-fab-button>
-    Todos
-  </ion-fab-button>
-<ion-fab-list class="fab-list-destino" side="top">
-    <button ion-fab
-    slot="fixed"
-    *ngIf="this.completeTableData.length > 0"
-    horizontal="center"
-    vertical="bottom"
-    #fabPrincipal>
-
-    </button>
-</ion-fab-list>
-</ion-fab>
-
-
-<ion-fab slot="fixed" *ngIf="this.completeTableData.length > 0"  horizontal="left"  vertical="bottom" style="margin-left:65px"  #fabEstado>
-    <ion-fab-button>
-      Estado
-    </ion-fab-button>
-  <ion-fab-list class="fab-list-estado" side="top">
-      <button
-          *ngFor="let estado of estadosList"
-          (click)="onClickFilter(estado, 'estado', [fabEstado])"
-          ion-fab>
-          {{estado}}
-      </button>
-
-  </ion-fab-list>
-</ion-fab>
-
-</div>
--->
 </ion-content>

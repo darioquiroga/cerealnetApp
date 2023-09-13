@@ -172,29 +172,35 @@ async refreshTable() {
 
       this.descargaService.getDescarga(formattedDate, formattedDate).then(
         async (resp: any)=>{
+          if (resp.error.descripcion != ""){
+            this.uiService.presentAlertInfo("Error "+resp.status+": "+resp.error.descripcion);
+            this.loading = false
+            await this.loadingController.dismiss();
+          }else{
+            let response = JSON.parse(JSON.stringify(resp.data));
+            this.completeTableData = response
+            // Guardo la cantidad en posicion (Posicion del dia)
+            let cantidadReg = this.completeTableData.length;
+            if (cantidadReg == undefined || cantidadReg == null){
+              cantidadReg = 0;
+            }
+            this.tituloCantidad = `Cantidad: ${cantidadReg}`;
+            this.respuestaEstadoDescarga =  response.descripcion;
 
 
-          let response = JSON.parse(JSON.stringify(resp.data));
-          this.completeTableData = response
-           // Guardo la cantidad en posicion (Posicion del dia)
-           let cantidadReg = this.completeTableData.length;
-           if (cantidadReg == undefined || cantidadReg == null){
-            cantidadReg = 0;
-           }
-           this.tituloCantidad = `Cantidad: ${cantidadReg}`;
-           this.respuestaEstadoDescarga =  response.descripcion;
+            // Guardo una parte parcial de la tabla completa (lazy load)
+            this.parcialTableData = this.completeTableData;//this.responsiveTableService.getInitParcialTable(this.completeTableData);
+
+            // Inicializo los estados toggle de las cartas en false
+            this.estadosToggleCarta = this.responsiveTableService.initToggles(this.completeTableData.length);
+            // Texto buscado vacio
+            this.inputSearchBar = '';
+            // Saco el spinner
+            this.loading = false;
+            await this.loadingController.dismiss();
+          }
 
 
-           // Guardo una parte parcial de la tabla completa (lazy load)
-           this.parcialTableData = this.completeTableData;//this.responsiveTableService.getInitParcialTable(this.completeTableData);
-
-           // Inicializo los estados toggle de las cartas en false
-           this.estadosToggleCarta = this.responsiveTableService.initToggles(this.completeTableData.length);
-           // Texto buscado vacio
-           this.inputSearchBar = '';
-           // Saco el spinner
-           this.loading = false;
-           await this.loadingController.dismiss();
 
         },
         (error: any) => {
@@ -210,6 +216,9 @@ async refreshTable() {
       };
 
     }
+
+
+
 
 
   ngOnInit() {

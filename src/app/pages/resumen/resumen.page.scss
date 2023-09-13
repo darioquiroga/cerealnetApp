@@ -1,6 +1,6 @@
 ion-content {
   background: rgb(255, 255, 255) !important;
-  @import "../../../assets/scss/cards.css";
+ // @import "../../../assets/scss/cards.css";
 
  }
 
@@ -98,7 +98,7 @@ ion-fab {
         margin-bottom: 7%;
     }
     .fab-list-destino {
-        left: 50%;
+        left: 130%;
         transform: translatex(-50%);
         align-items: center;
 
@@ -171,7 +171,8 @@ ion-fab {
           .head-table {
               background: $head-table;
               color: $important-info--odd;
-
+              padding-left: 15px;
+              padding-right: 40px;
               .element-head-table {
                   font-weight: bold;
               }
@@ -353,6 +354,7 @@ ion-fab {
 
 
           .spinner-container {
+            background-color: transparent;
               ion-spinner {
                   margin: 12% 0;
               }
@@ -361,6 +363,7 @@ ion-fab {
           .infinite-scroll-top {
               display: flex;
               justify-content: center;
+              background-color: #f4f5f8;
               ion-spinner {
                   margin: 20px 0;
               }

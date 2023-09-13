@@ -9,7 +9,7 @@ import { Login } from 'src/app/modelo/login';
 import { StorageService } from './storageService';
 import { IonRefresher } from '@ionic/angular';
 import { Observable, timeout } from 'rxjs';
-import { NotificacionesService } from './notificaciones.service';
+//import { NotificacionesService } from './notificaciones.service';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +32,7 @@ export class LoginService {
   public timeOut: any;
   constructor(
     private http: HttpClient,
-    private notificacionService: NotificacionesService
+    //private notificacionService: NotificacionesService
   ) //private storageService: StorageService,
   {}
 
@@ -42,7 +42,7 @@ export class LoginService {
     const isPuertos = login.usuario[0] === '*';
 
     // Mando el pushId al login y mando un evento para activar el modo de notificacion del usaurio
-    const pushId: string = await this.notificacionService.getPushId();
+    const pushId: string = '0';//await this.notificacionService.getPushId();
     // Me logueo y obtengo los datos de logueo
     //const dataLogin = await this.authService.login(usuario, clave, pushId, isPuertos);
 

@@ -70,6 +70,17 @@ const routes: Routes = [
   },
 
 
+  {
+    path: 'camionero-registro',
+    loadChildren: () => import('./pages/camionero-registro/camionero-registro.module').then( m => m.CamioneroRegistroPageModule)
+  },
+  {
+    path: 'buscar-camion',
+    loadChildren: () => import('./pages/buscar-camion/buscar-camion.module').then( m => m.BuscarCamionPageModule)
+  },
+
+
+
 
 
 

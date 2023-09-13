@@ -37,17 +37,22 @@
         </ion-menu-toggle>
 
 
-
+        <ion-menu-toggle >
+          <ion-item lines="none" detail="false" button (click)="onClickDescarga()">
+            <ion-icon aria-hidden="true" slot="start" [ios]="'download-outline'" [md]="'download-outline'"></ion-icon>
+            <ion-label>Descarga</ion-label>
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
+
 
     <ion-list id="inbox-list" *ngIf="this.notificacionesMostrar === true">
       <br>
-      <hr>
+
         <ion-list-header style="font-size: 12px;">
            Notificaciones
         </ion-list-header>
-
-        <ion-menu-toggle>
+       <ion-menu-toggle>
           <ion-item>
             <ion-icon aria-hidden="true" slot="start" [ios]="'notifications-outline'" [md]="'notifications-outline'"></ion-icon>
             <ion-label>Push</ion-label>
@@ -66,8 +71,6 @@
 
 
  <ion-list id="inbox-list">
-  <br>
-  <hr>
 
   <ion-list-header style="font-size: 12px;">
      Otros

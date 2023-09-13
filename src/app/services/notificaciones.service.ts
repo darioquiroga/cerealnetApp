@@ -107,19 +107,20 @@ export class NotificacionesService {
     async getPushId() {
       if (this.platform.is('cordova')) {
           // Me conecto a one signal
-          this.connectOneSignal();
+          //this.connectOneSignal();
           // Retorno el id del dispositvio de oneSignal
-          return (await this.oneSignal.getIds()).userId;
+          //return (await this.oneSignal.getIds()).userId;
+          return "connectedByBrowser";
       } else {
           return 'connectedByBrowser';
       }
   }
   connectOneSignal() {
-    this.oneSignal.startInit(Configuraciones.oneSignalCredenciales.appId, Configuraciones.oneSignalCredenciales.googleProjectnumber);
+   /* this.oneSignal.startInit(Configuraciones.oneSignalCredenciales.appId, Configuraciones.oneSignalCredenciales.googleProjectnumber);
     this.oneSignal.inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.InAppAlert);
     this.oneSignal.handleNotificationReceived().subscribe(() => {});
     this.oneSignal.handleNotificationOpened().subscribe(() => {});
-    this.oneSignal.endInit();
+    this.oneSignal.endInit();*/
 }
     public ponerEnFalso() {
      // alert("ponerEnFalso")
@@ -202,6 +203,6 @@ export class NotificacionesService {
     private getURLServicio() {
         // Por ahora devuelvo el string como esta, despues hay que usar el token
         return NotificacionesService.URLSERVICIO + `${this.usuarioActual.cuenta.id}`;
-        debugger
+
     }
 }

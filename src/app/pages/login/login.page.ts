@@ -168,6 +168,11 @@ export class LoginPage implements OnInit {
 
   }
 
+  async soyCamionero(){
+
+   this.navController.navigateRoot('/camionero-registro', { animated: true });
+  }
+
   /**
   * Este metodo se usa para la recuperacion de contraseñas
   */

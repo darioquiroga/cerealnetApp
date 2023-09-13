@@ -27,9 +27,10 @@ export class AppComponent {
   // Mantengo actualizado este json acá en el javascript
   public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
   public notificacionesMostrar = false;
+  public descargaMostrar = false;
   public appPages = [
     { title: 'Posición de día', url: '/resumen', icon: 'calendar' },
-    { title: 'Descarga', url: '/descarga', icon: 'download' },
+
     //{ title: 'Buscar Carta', url: '/buscar-carta', icon: 'search' },
 
   ];
@@ -60,7 +61,6 @@ export class AppComponent {
 
     if (typeof this.usuarioActivoJson === 'string') {
       const usuario = JSON.parse(this.usuarioActivoJson);
-
       if (usuario.tipo.id == 1){
         this.notificacionesMostrar = false;
       }else{

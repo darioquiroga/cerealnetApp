@@ -28,6 +28,7 @@ export class DescargaService {
   // DECLARACION DE LAS PROPIEDADES QUE NECESITO //
   //---------------------------------------------//
   public static URLSERVICIO: string = Configuraciones.urlBase;
+  public static URLSERVICIOPUERTOS: string = Configuraciones.urlBasePuertos;
      /**
      * A partir del array de los intervinientes y un nombre de interviniente, obtiene ese interviniente.
      */
@@ -155,7 +156,12 @@ export class DescargaService {
     }else{
       op = "historia";
     }
-    return DescargaService.URLSERVICIO + `/cartaPorte/`+op
+    if(isPuertos === true){
+      return DescargaService.URLSERVICIOPUERTOS + `/cartaPorte/`+op
+    }else{
+      return DescargaService.URLSERVICIO + `/cartaPorte/`+op
+    }
+
 
   }
 

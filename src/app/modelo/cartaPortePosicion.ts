@@ -9,6 +9,9 @@ import { Planta } from "./planta";
 import { TipoInterviniente } from "./tipoInterviniente";
 
 export class CartaPortePosicion {
+    map(arg0: (cp: any) => CartaPortePosicion): any {
+      throw new Error('Method not implemented.');
+    }
     nroCarta: number;
     nroVagon: number;
     fechaDescarga: Date;
@@ -21,7 +24,9 @@ export class CartaPortePosicion {
     codEntre: number;
     kgNetoProcedencia: number;
     intervinientes: Interviniente [];
+
     entregador: Entregador;
+
     cereal: Cereal;
     localidadProcedencia: Localidad;
     turno: number;

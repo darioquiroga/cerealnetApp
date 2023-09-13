@@ -155,6 +155,7 @@ searchByNroCartaOrPatente(ev: { target: { value: any; }; }, completeTableData: C
 
 }
 
+
 // Checkea si el infinte scroll de arriba (el spinner) esta activo, fijándose si el 1er elemento de la tabla parcial ES el primer elemento de la tabla completa.
 // Si no es, entonces TENGO que mostrar el spinner de arriba
 checkIfSpinnerTopIsOn(completeTableData: string | any[], parcialTableData: any[]) {

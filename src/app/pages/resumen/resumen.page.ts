@@ -37,7 +37,7 @@ import {
 
 } from '@capacitor/push-notifications';
 
-import { NotificacionesService } from 'src/app/services/notificaciones.service';
+//import { NotificacionesService } from 'src/app/services/notificaciones.service';
 import { Configuraciones }  from '../../shared/constants/configuraciones';
 import * as _ from 'lodash';
 import { async } from 'rxjs';
@@ -76,14 +76,14 @@ export class ResumenPage implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   istodoCargado : any
   public esPuertosSn: any;
-  public notificaciones: any;
+  //public notificaciones: any;
   public ver: boolean = false;
   public numeroMensajes: any;
   public usuarioActivoJson = localStorage.getItem('usuarioActual')?.toString();
 
 
    // Estado de la busqueda, si esta activa o no
-   busquedaActiva: boolean | undefined;
+   busquedaActiva: boolean | false = false;
    // Texto buscado (esta bindeado con el input)
    inputSearchBar: string | undefined;;
    // Estados de cartas expandidas o contraidas
@@ -122,7 +122,7 @@ export class ResumenPage implements OnInit {
     private navController: NavController,
     private loadingController: LoadingController,
     private menuController: MenuController,
-    public notificacionesService: NotificacionesService,
+    //public notificacionesService: NotificacionesService,
     private menuCtrl : MenuController,
 
 
@@ -149,7 +149,7 @@ export class ResumenPage implements OnInit {
     this.seccion = this.activatedRoute.snapshot.paramMap.get('id') as string;
     this.filtroEstado = "";
     this.filtroDestino = "";
-    this.notificacionesService.ponerEnFalso();
+    /**this.notificacionesService.ponerEnFalso();
     this.notificacionesService.checkPorVer().then(async (resp) => {
       this.data = resp;
       if (this.data > 0) {
@@ -158,7 +158,7 @@ export class ResumenPage implements OnInit {
         this.ver = false;
       }
       this.numeroMensajes = this.data;
-    });
+    }); */
 
 
     this.initTable();
@@ -255,9 +255,9 @@ public getLogoEmpresa() {
   public  cargarDatos() {
 
     // traigo las notificaciones
-    this.notificacionesService.load().then((notificaciones) => {
-      this.notificaciones = notificaciones;
-    });
+    //this.notificacionesService.load().then((notificaciones) => {
+      //this.notificaciones = notificaciones;
+    //});
     // traigo el mercado de cereales
    // await this.uiService.presentLoading("Cargando mercados...");
 
@@ -302,7 +302,7 @@ async searchByText(ev: any,  exclude?: any) {
   // Busco
   let respuestaBusqueda = await this.responsiveTableService.searchByNroCartaOrPatente(ev, this.completeTableData);
   // Defino si hay una búsqueda activa
-  //this.busquedaActiva = respuestaBusqueda.busquedaActiva;
+  this.busquedaActiva = respuestaBusqueda.busquedaActiva;
   // Guardo la parcial table encontrada
   this.parcialTableData = respuestaBusqueda.parcialTableEncontrada;
   // Cierro todos los toggles de las cartas de porte
@@ -391,22 +391,24 @@ async refreshTable() {
           this.esPuertosSn = this.puertosService.getIfPuertos();
           const data = JSON.stringify(resp);
           this.completeTableData = JSON.parse(data).data ;
-          debugger
+          if (!this.completeTableData){
+            this.tituloCantidad = `Nada en Posición `;
+          }else{
+            this.tituloCantidad = `Cantidad en Posicion: `+this.completeTableData.length;
+          }
           // Guardo la cantidad en posicion (Posicion del dia)
-          this.tituloCantidad = `Cantidad en Posicion: `;
+
 
          // Guardo una parte parcial de la tabla completa (lazy load)
-         await this.loadingController.dismiss();
+
          this.parcialTableData = this.responsiveTableService.getInitParcialTable(this.completeTableData);
-
-
           // Obtengo los destinos para los filtros
           this.destinosList = this.posicionDiaService.getDestinosList(this.completeTableData);
           // Inicializo los estados toggle de las cartas en false
           this.estadosToggleCarta = this.responsiveTableService.initToggles(this.completeTableData.length);
            // Texto buscado vacio
           this.inputSearchBar = '';
-
+          await this.loadingController.dismiss();
         }) ;
 
 
